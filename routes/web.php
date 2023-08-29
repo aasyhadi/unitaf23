@@ -137,6 +137,11 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin']), functi
     Route::get('/barang/{id}','Backend\BarangController@show');
     Route::get('/barang/harga/{id}','Backend\BarangController@histori');
 
+	Route::get('/barang-po/datatable','Backend\BarangPoController@datatable');
+	Route::get('/barang-po','Backend\BarangPoController@index');
+    Route::get('/barang-po/{id}','Backend\BarangPoControllerr@show');
+    Route::get('/barang-po/harga/{id}','Backend\BarangPoController@histori');
+
 	Route::get('/barang-ppdb/datatable','Backend\BarangPpdbController@datatable');
 	Route::get('/barang-ppdb','Backend\BarangPpdbController@index');
     Route::get('/barang-ppdb/{id}','Backend\BarangPpdbController@show');
@@ -150,7 +155,8 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin']), functi
 
 	Route::get('/browse-barang-ppdb/datatable','Backend\BarangPpdbController@datatable_barang');
 
-    Route::get('/browse-barang/datatable','Backend\BarangController@datatable_barang');
+    Route::get('/browse-barang-po/datatable','Backend\BarangPoController@datatable_barang');
+	Route::get('/browse-barang/datatable','Backend\BarangController@datatable_barang');
     Route::get('/browse-supplier/datatable','Backend\SupplierController@datatable_supplier');
 
 	Route::get('/browse-barang-umkm/datatable','Backend\BarangController@datatable_barang_umkm');

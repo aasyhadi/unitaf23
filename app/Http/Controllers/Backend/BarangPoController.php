@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redirect;
 use Datatables;
 
-class BarangController extends Controller
+class BarangPoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,8 +23,7 @@ class BarangController extends Controller
      */
     public function index()
     {
-        //
-		return view ('backend.barang.index');
+        return view ('backend.barang-po.index');
     }
 
     /**
@@ -35,7 +34,7 @@ class BarangController extends Controller
     public function create()
     {
         //
-		return view ('backend.barang.update');
+		return view ('backend.barang-po.update');
     }
 
     /**
@@ -60,7 +59,7 @@ class BarangController extends Controller
 		$data->user_modified = Session::get('userinfo')['user_id'];
         $data->id_unit = Session::get('userinfo')['id_unit'];
 		if($data->save()){
-			return Redirect::to('/backend/barang')->with('success', "Data saved successfully")->with('mode', 'success');
+			return Redirect::to('/backend/barang-po')->with('success', "Data saved successfully")->with('mode', 'success');
 		}
 
     }
@@ -75,7 +74,7 @@ class BarangController extends Controller
         //
 		$data = Barang::with(['user_modify'])->where('id', $id)->get();
 		if ($data->count() > 0){
-			return view ('backend.barang.view', ['data' => $data]);
+			return view ('backend.barang-po.view', ['data' => $data]);
 		}
     }
 
@@ -90,7 +89,7 @@ class BarangController extends Controller
         //
 		$data = Barang::where('id', $id)->where('active', '!=', 0)->get();
 		if ($data->count() > 0){
-			return view ('backend.barang.update', ['data' => $data]);
+			return view ('backend.barang-po.update', ['data' => $data]);
 		}
     }
 
@@ -117,7 +116,7 @@ class BarangController extends Controller
 		$data->user_modified = Session::get('userinfo')['user_id'];
         $data->id_unit = Session::get('userinfo')['id_unit'];
 		if($data->save()){
-			return Redirect::to('/backend/barang')->with('success', "Data saved successfully")->with('mode', 'success');
+			return Redirect::to('/backend/barang-po')->with('success', "Data saved successfully")->with('mode', 'success');
 		}
     }
 
@@ -179,9 +178,9 @@ class BarangController extends Controller
 				$userinfo = Session::get('userinfo');
 				$access_control = Session::get('access_control');
 				$segment =  \Request::segment(2);
-				$url_edit = url('backend/barang/'.$data->id.'/edit');
-                $url = url('backend/barang/'.$data->id);
-                $url_harga = url('backend/barang/harga/'.$data->id);
+				$url_edit = url('backend/barang-po/'.$data->id.'/edit');
+                $url = url('backend/barang-po/'.$data->id);
+                $url_harga = url('backend/barang-po/harga/'.$data->id);
 				$view = "<a class='btn-action btn btn-primary btn-view' href='".$url."' title='View'><i class='fa fa-eye'></i></a>";
 				$edit = "<a class='btn-action btn btn-info btn-edit' href='".$url_edit."' title='Edit'><i class='fa fa-edit'></i></a>";
                // $delete = "<button data-url='".$url."' onclick='deleteData(this)' class='btn-action btn btn-danger btn-delete' title='Delete'><i class='fa fa-trash-o'></i></button>";
@@ -219,7 +218,7 @@ class BarangController extends Controller
         $data = Barang::select('barang.*')
             ->where('barang.id_kategori', '!=', 4)
 		    ->where('barang.active', '!=', 0)
-            ->where('barang.stok_total', '>', 0)
+            ->where('barang.stok_total', '>=', 0)
             ->where('barang.id_unit', '=', Session::get('userinfo')['id_unit']);
 		
         return Datatables::of($data)
@@ -229,18 +228,7 @@ class BarangController extends Controller
 	public function histori($id) {
         //
 		$data = PurchaseD::with(['purchase'])->where('id_barang', $id)->orderBy('id', 'DESC')->limit(3)->get();
-		return view ('backend.barang.histori', ['data' => $data]);
+		return view ('backend.barang-po.histori', ['data' => $data]);
 	}   
     
-    public function datatable_barang_umkm() {
-        //
-        $data = Barang::select('barang.*')
-		    ->where('barang.active', '!=', 0)
-            ->where('barang.id_kategori', '=', 4)
-            ->where('barang.id_unit', '=', Session::get('userinfo')['id_unit']);
-		
-        return Datatables::of($data)
-            ->make(true);		
-    }
-
 }

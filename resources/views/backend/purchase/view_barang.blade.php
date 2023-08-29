@@ -28,7 +28,7 @@
     $('.dataTable-purchase-barang').dataTable({
         processing: true,
         serverSide: true,
-        ajax: "<?=url('backend/browse-barang/datatable');?>",
+        ajax: "<?=url('backend/browse-barang-po/datatable');?>",
         columns: [
             {data: 'id', name: 'id'},
             {data: 'kode', name: 'kode'},

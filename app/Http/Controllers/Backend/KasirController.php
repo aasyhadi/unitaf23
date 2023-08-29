@@ -165,7 +165,7 @@ class KasirController extends Controller
 
     public function get_barcode($id_barang) {
         $id_unit = Session::get('userinfo')['id_unit'];
-        $barcode = DB::table('barang')->where('kode', $id_barang)->where('id_kategori','!=', 4)->where('id_unit', $id_unit)->first();
+        $barcode = DB::table('barang')->where('kode', $id_barang)->where('id_kategori','!=', 4)->where('id_unit', $id_unit)->where('stok_total','>',0)->first();
         if($barcode){
             $respon = array('status'=>true,'data'=>$barcode, 
             	'informasi'=>'Nama Barang: '. $barcode->nama);
