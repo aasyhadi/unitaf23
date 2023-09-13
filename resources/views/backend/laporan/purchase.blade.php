@@ -128,7 +128,7 @@
                                         <td><?=$item->id;?></td>
                                         <td><b><a href="<?=url('backend/purchase-order/'.$item->id);?>" target=_blank><?=$item->no_inv;?></a></b></td>
                                         <td><?=date('d M Y', strtotime($item->tanggal));?></td>
-                                        <td><?=$item->supplier->nama;?></td>
+                                        <td><?=$item->nama;?></td>
                                         <td><?=number_format($item->total,0,',','.');?></td>
                                         <td>
                                             <?php
