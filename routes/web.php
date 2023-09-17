@@ -114,7 +114,12 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin']), functi
 	Route::get('/users-user/datatable','Backend\UserController@datatable');
 	Route::get('/users-user','Backend\UserController@index');
 	Route::get('/users-user/{id}','Backend\UserController@show');
+
     Route::get('/user/export/{type}','ExcelController@export_user');
+	Route::get('/user/export/{type}','ExcelController@export_penjualan');
+	Route::get('/user/export/{type}','ExcelController@export_umkm');
+	Route::get('/user/export/{type}','ExcelController@export_penjualan_unit');
+	Route::get('/user/export/{type}','ExcelController@export_umkm_unit');
 
 	Route::get('/media-library/datatable/','Backend\MediaLibraryController@datatable');
 	Route::get('/media-library','Backend\MediaLibraryController@index');

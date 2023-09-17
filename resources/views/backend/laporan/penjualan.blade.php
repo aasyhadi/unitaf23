@@ -114,6 +114,57 @@
 			</div>
 		</div>					
 	</div>
+
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="x_panel" style="background-color: #eab676;">
+                <div class="x_content">
+                    <h2>Laporan Export Excel</h2>
+                    <form id="form-work" class="form-horizontal" action="{{ url('/backend/user/export/xls') }}" role="form" autocomplete="off" method="GET" >
+                        {!! csrf_field() !!}
+
+                        <div class="row">
+
+                            <div class="col-xs-12 col-sm-1" style="margin-top:7px;">
+                                Tanggal
+                            </div>
+                            <div class="col-xs-12 col-sm-3 date">
+                                <div class='input-group date' id='myDatepicker'>
+                                    <input type='text' class="form-control" name="startDate" value=<?=$startDate;?> />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 date">
+                                <div class='input-group date' id='myDatepicker2'>
+                                    <input type='text' class="form-control" name="endDate" value=<?=$endDate;?> />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-2 text-right">
+                                <?php
+                                    $checked = "";
+                                    if ($mode == "all"){
+                                        $checked = "checked";
+                                    }
+                                ?>
+                                <div class="checkbox">
+                                    <input type="checkbox" name="mode" value="all" id="show-all" <?=$checked;?>>Tampilkan semua
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-2">
+                                <button type="submit" class="btn btn-primary btn-block">Export Excel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 <!-- CSS -->
