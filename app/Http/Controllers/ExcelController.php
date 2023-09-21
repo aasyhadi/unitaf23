@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 use Session;
 use App\Http\Controllers;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\objToString;
 use App\Http\Controllers\Backend\ManagerController;
 use App\Model\User;
 use App\Model\PenjualanH;
 use App\Model\KeepH;
+use App\Model\KeepD;
+use App\Model\Produk;
+use App\Model\Supplier;
 use Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Database\Query\Builder;
 
 class ExcelController extends Controller {
 
@@ -128,13 +133,43 @@ class ExcelController extends Controller {
 		$startDateQuery = date("Y-m-d", strtotime($startDate));
         $endDateQuery = date("Y-m-d", strtotime($endDate));
         if ($mode == "all"){
-            $data = KeepH::where('keep_h.active', '!=', 0)->where('keep_h.id_unit','=',$id_unit)->orderBy('keep_h.tanggal', 'ASC');
+           /*  $data = KeepH::where('keep_h.active', '!=', 0)->where('keep_h.id_unit','=',$id_unit)->orderBy('keep_h.tanggal', 'ASC'); */
+		   $data = DB::table('keep_d')->select('keep_h.tanggal','supplier.nama as nama_umkm', 
+		   'barang.nama as nama_produk', 'keep_d.harga_keep', 
+		   'keep_d.harga_jual', 'keep_d.jumlah', 'keep_d.sisa', 
+		   DB::raw('keep_d.harga_jual * (keep_d.jumlah - keep_d.sisa) as penjualan'), 
+		   DB::raw('keep_d.harga_keep * (keep_d.jumlah - keep_d.sisa) as setor_umkm'), 
+		   DB::raw('(keep_d.harga_jual * (keep_d.jumlah - keep_d.sisa)) - 
+		   (keep_d.harga_keep * (keep_d.jumlah - keep_d.sisa)) as bagihasi'))
+		   ->leftJoin('keep_h', 'keep_h.id', '=', 'keep_d.id_keep')
+		   ->leftJoin('barang', 'barang.id', '=', 'keep_d.id_barang')
+		   ->leftJoin('supplier', 'supplier.id', '=', 'keep_d.id_supplier')
+		   ->where('keep_h.active', '!=', 0)
+		   ->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit'])
+		   ->get()->toArray();
+
         } else 
         if ($mode == "limited"){
-            $data = KeepH::where('keep_h.active', '!=', 0)->where('keep_h.id_unit','=',$id_unit)->whereBetween('tanggal', [$startDateQuery, $endDateQuery])->orderBy('keep_h.tanggal', 'ASC');
+           /*  $data = KeepH::where('keep_h.active', '!=', 0)->where('keep_h.id_unit','=',$id_unit)->whereBetween('tanggal', [$startDateQuery, $endDateQuery])->orderBy('keep_h.tanggal', 'ASC'); */
+		   $data = DB::table('keep_d')->select('keep_h.tanggal', 'supplier.nama as nama_umkm', 
+		   'barang.nama as nama_produk', 'keep_d.harga_keep', 
+		   'keep_d.harga_jual', 'keep_d.jumlah', 'keep_d.sisa', 
+		   DB::raw('keep_d.harga_jual * (keep_d.jumlah - keep_d.sisa) as penjualan'), 
+		   DB::raw('keep_d.harga_keep * (keep_d.jumlah - keep_d.sisa) as setor_umkm'), 
+		   DB::raw('(keep_d.harga_jual * (keep_d.jumlah - keep_d.sisa)) - 
+		   (keep_d.harga_keep * (keep_d.jumlah - keep_d.sisa)) as bagihasi'))
+		   ->leftJoin('keep_h', 'keep_h.id', '=', 'keep_d.id_keep')
+		   ->leftJoin('barang', 'barang.id', '=', 'keep_d.id_barang')
+		   ->leftJoin('supplier', 'supplier.id', '=', 'keep_d.id_supplier')
+		   ->where('keep_h.active', '!=', 0)
+		   ->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit'])
+		   ->whereBetween('keep_h.tanggal', [$startDateQuery, $endDateQuery])
+		   ->get()->toArray(); 
+
         }
 
-		$data = $data->get()->toArray();
+		/* $data = $data->get()->toArray(); */
+		$data= json_decode( json_encode($data), true);
 
 	 	return Excel::create('export_umkm', function($excel) use ($data) {
 			$excel->sheet('List UMKM', function($sheet) use ($data)
@@ -212,15 +247,47 @@ class ExcelController extends Controller {
         
 		$startDateQuery = date("Y-m-d", strtotime($startDate));
         $endDateQuery = date("Y-m-d", strtotime($endDate));
+		$id_unit = Session::get('userinfo')['id_unit'];
+
         if ($mode == "all"){
-            $data = KeepH::where('keep_h.active', '!=', 0)->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit']);
+           /*  $data = KeepH::where('keep_h.active', '!=', 0)
+				->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit']); */
+				$data = DB::table('keep_d')->select('keep_h.tanggal','supplier.nama as nama_umkm', 
+					'barang.nama as nama_produk', 'keep_d.harga_keep', 
+					'keep_d.harga_jual', 'keep_d.jumlah', 'keep_d.sisa', 
+					DB::raw('keep_d.harga_jual * (keep_d.jumlah - keep_d.sisa) as penjualan'), 
+					DB::raw('keep_d.harga_keep * (keep_d.jumlah - keep_d.sisa) as setor_umkm'), 
+					DB::raw('(keep_d.harga_jual * (keep_d.jumlah - keep_d.sisa)) - 
+					(keep_d.harga_keep * (keep_d.jumlah - keep_d.sisa)) as bagihasi'))
+					->leftJoin('keep_h', 'keep_h.id', '=', 'keep_d.id_keep')
+					->leftJoin('barang', 'barang.id', '=', 'keep_d.id_barang')
+					->leftJoin('supplier', 'supplier.id', '=', 'keep_d.id_supplier')
+					->where('keep_h.active', '!=', 0)
+					->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit'])
+					->get()->toArray();
         } else 
         if ($mode == "limited"){
-            $data = KeepH::where('keep_h.active', '!=', 0)->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit'])->whereBetween('tanggal', [$startDateQuery, $endDateQuery]);
+            /* $data = KeepH::where('keep_h.active', '!=', 0)
+				->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit'])
+				->whereBetween('tanggal', [$startDateQuery, $endDateQuery]); */
+				$data = DB::table('keep_d')->select('keep_h.tanggal', 'supplier.nama as nama_umkm', 
+				'barang.nama as nama_produk', 'keep_d.harga_keep', 
+				'keep_d.harga_jual', 'keep_d.jumlah', 'keep_d.sisa', 
+				DB::raw('keep_d.harga_jual * (keep_d.jumlah - keep_d.sisa) as penjualan'), 
+				DB::raw('keep_d.harga_keep * (keep_d.jumlah - keep_d.sisa) as setor_umkm'), 
+				DB::raw('(keep_d.harga_jual * (keep_d.jumlah - keep_d.sisa)) - 
+				(keep_d.harga_keep * (keep_d.jumlah - keep_d.sisa)) as bagihasi'))
+				->leftJoin('keep_h', 'keep_h.id', '=', 'keep_d.id_keep')
+				->leftJoin('barang', 'barang.id', '=', 'keep_d.id_barang')
+				->leftJoin('supplier', 'supplier.id', '=', 'keep_d.id_supplier')
+				->where('keep_h.active', '!=', 0)
+				->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit'])
+				->whereBetween('keep_h.tanggal', [$startDateQuery, $endDateQuery])
+				->get()->toArray(); 
         }
 
-		$data = $data->get()->toArray();
-
+		$data= json_decode( json_encode($data), true);
+		
 	 	return Excel::create('export_umkm_unit', function($excel) use ($data) {
 			$excel->sheet('List UMKM Unit', function($sheet) use ($data)
 	        {
