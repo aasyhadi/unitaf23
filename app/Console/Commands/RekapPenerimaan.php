@@ -72,6 +72,6 @@ class RekapPenerimaan extends Command
                             p.harga,
                             b.harga_beli,
                             p.created_at,
-                            h.id_unit"); 
+                            h.id_unit")->get(); 
     }
 }
