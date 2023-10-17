@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Database\Query\Builder;
 use DB;
 use App\Model\Rekapan;
 
