@@ -41,7 +41,8 @@ class RekapPenerimaanUnit extends Command
     public function handle()
     {
         //angka 2 ambil dari session atau yang lain?
-        $unit = $this->argument('unit');
+        //$unit = $this->argument('unit');
+        $unit = Session::get('userinfo')['id_unit'];
         $this->info('You call create:rekappenerimaanunit command');
         //RekapanUnit::where('id_unit', '=', $unit)->delete();
         DB::table("rekapan")->where('id_unit', '=', $unit)->delete();
