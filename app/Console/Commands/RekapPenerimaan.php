@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Database\Query\Builder;
 use DB;
 use App\Model\Rekapan;
 
@@ -42,7 +41,7 @@ class RekapPenerimaan extends Command
     {
         //
         $this->info('You call create:rekappenerimaan command');
-        DB::table("rekapan_unit")->fetch();
+        DB::table("rekapan_unit")->delete();
         DB::select("INSERT INTO rekapan_unit ( id, kode, nama, id_kategori, jumlah, id_tingkat, penjualan, modal, penerimaan, bulan, id_unit ) SELECT
                             b.id,
                             b.kode,
@@ -72,6 +71,6 @@ class RekapPenerimaan extends Command
                             p.harga,
                             b.harga_beli,
                             p.created_at,
-                            h.id_unit")->get(); 
+                            h.id_unit"); 
     }
 }
