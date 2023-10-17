@@ -259,7 +259,7 @@ class ManagerController extends Controller
                     LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori 
                 WHERE
                     b.id_kategori = 5
-                    AND h.id_unit = 2 
+                    AND h.id_unit = 1 
                     AND h.active != 0 
                     AND substr( p.created_at, 6, 2 ) = $bulan
                 GROUP BY b.id,b.kode,b.nama,p.harga");
