@@ -43,7 +43,8 @@ class RekapPenerimaanUnit extends Command
         //angka 2 ambil dari session atau yang lain?
         $unit = $this->argument('unit');
         $this->info('You call create:rekappenerimaanunit command');
-        RekapanUnit::where('id_unit', '=', $unit)->delete();
+        //RekapanUnit::where('id_unit', '=', $unit)->delete();
+        DB::table("rekapan")->where('id_unit', '=', $unit)->delete();
         DB::statement("INSERT INTO rekapan ( id, kode, nama, id_kategori, jumlah, penjualan, modal, penerimaan, bulan, id_unit) SELECT
                             b.id,
                             b.kode,
