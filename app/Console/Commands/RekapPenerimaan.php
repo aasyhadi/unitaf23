@@ -41,7 +41,7 @@ class RekapPenerimaan extends Command
     {
         //
         $this->info('You call create:rekappenerimaan command');
-        DB::table("rekapan_unit")->fetchAll();
+        DB::table("rekapan_unit")->delete();
         DB::select("INSERT INTO rekapan_unit ( id, kode, nama, id_kategori, jumlah, id_tingkat, penjualan, modal, penerimaan, bulan, id_unit ) SELECT
                             b.id,
                             b.kode,
