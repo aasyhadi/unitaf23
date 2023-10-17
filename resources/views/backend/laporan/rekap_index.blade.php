@@ -9,7 +9,12 @@
 		"0"=>"",
 		"1"=>'Minuman & Ice Cream', 
 		"2"=>'Alat Tulis Sekolah', 
-		"3"=>'Seragam & Perlengkapan Sekolah'); 
+		"3"=>'Seragam & Perlengkapan Sekolah',
+        "4"=>'...',
+        "5"=>'TERA',
+        "6"=>'...',
+        "7"=>'...',
+        "8"=>'Kangen Water'); 
 	$kategori_select = request('kategori');
 
     if(!$list_kategori){

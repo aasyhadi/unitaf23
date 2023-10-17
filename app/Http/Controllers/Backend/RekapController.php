@@ -47,6 +47,14 @@ class RekapController extends Controller
                 id_kategori = 3 AND 
                 id_unit = $id_unit AND
                 bulan = $bulan");
+        $data_tera  = DB::select("SELECT sum(penerimaan) as total FROM rekapan WHERE 
+                id_kategori = 5 AND 
+                id_unit = $id_unit AND
+                bulan = $bulan");
+        $data_kangen  = DB::select("SELECT sum(penjualan) as total FROM rekapan WHERE 
+                id_kategori = 8 AND 
+                id_unit = $id_unit AND
+                bulan = $bulan");
         $data_umkm = DB::select("SELECT sum(bagi_hasil) as total FROM keep_h WHERE 
                 id_unit = $id_unit AND
                 substr(created_at, 6, 2 ) = $bulan");
@@ -57,17 +65,23 @@ class RekapController extends Controller
         $tot_peralatan = DB::table(DB::raw("($sql_peralatan) as x"))->select(['total'])->pluck('total')[0];
         $sql_seragam = "SELECT sum(penerimaan) as total FROM rekapan WHERE id_kategori = 3 AND id_unit = $id_unit AND bulan = $bulan";
         $tot_seragam = DB::table(DB::raw("($sql_seragam) as x"))->select(['total'])->pluck('total')[0];
+        $sql_tera = "SELECT sum(penerimaan) as total FROM rekapan WHERE id_kategori = 5 AND id_unit = $id_unit AND bulan = $bulan";
+        $tot_tera = DB::table(DB::raw("($sql_tera) as x"))->select(['total'])->pluck('total')[0];
+        $sql_kangen = "SELECT sum(penjualan) as total FROM rekapan WHERE id_kategori = 8 AND id_unit = $id_unit AND bulan = $bulan";
+        $tot_kangen = DB::table(DB::raw("($sql_kangen) as x"))->select(['total'])->pluck('total')[0];
         $sql_umkm= "SELECT sum(bagi_hasil) as total FROM keep_h WHERE id_unit = $id_unit AND substr(created_at, 6, 2 ) = $bulan";
         $tot_umkm = DB::table(DB::raw("($sql_umkm) as x"))->select(['total'])->pluck('total')[0]; 
+       
         
         $grand_total = 0;
-        if (isset($tot_minuman) || isset($tot_seragam) || isset($tot_seragam) || isset($tot_umkm) ){
-            $grand_total = $tot_minuman  + $tot_seragam + $tot_seragam + $tot_umkm ;
+        if (isset($tot_minuman) || isset($tot_seragam) || isset($tot_peralatan) || isset($tot_umkm) || isset($tot_tera) || isset($tot_kangen) ){
+            $grand_total = $tot_minuman  + $tot_seragam + $tot_peralatan + $tot_umkm + $tot_tera + $tot_kangen;
         } 
         
         Session::flash('success','Rekap Penerimaan Bulan '.$bulan_select);
         Session::flash('mode','success');
-        return view('backend.rekapan.penerimaan_view', compact(['data_minuman','data_alat_tulis','data_seragam','data_umkm','grand_total']));
+        return view('backend.rekapan.penerimaan_view', compact(['data_minuman','data_alat_tulis','data_seragam',
+        'data_tera','data_kangen','data_umkm','grand_total']));
     }
 
     public function index_pengeluaran()

@@ -127,6 +127,20 @@
                                     @endforeach
                                 </tr>
                                 <tr>
+                                	<td>5.</td>
+                                    <td>Seragam TERA</td>
+                                    @foreach ($data_tera as $dr)
+                                    <td id="lima" value="{{$dr->total}}" style="text-align:right"><?=number_format($dr->total,0,',','.');?></td>
+                                    @endforeach
+                                </tr>
+                                <tr>
+                                	<td>6.</td>
+                                    <td>Kangen Water</td>
+                                    @foreach ($data_kangen as $dk)
+                                    <td id="enam" value="{{$dk->total}}" style="text-align:right"><?=number_format($dk->total,0,',','.');?></td>
+                                    @endforeach
+                                </tr>
+                                <tr>
                                     <td colspan=5 align=right>
                                         <h4>Grand Total : Rp. <?=number_format($grand_total,0,',','.');?></h4>
                                     </td>
