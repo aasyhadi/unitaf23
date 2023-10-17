@@ -41,7 +41,7 @@
 @section('content')
 <div class="page-title">
         <div class="title_left">
-            <h3>Rekap Penerimaan aaaaa</h3>
+            <h3>Rekap Penerimaan</h3>
         </div>
         <div class="title_right">
             <div class="col-md-4 col-sm-4 col-xs-8 form-group pull-right top_search">
