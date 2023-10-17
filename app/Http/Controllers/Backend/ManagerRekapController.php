@@ -174,7 +174,7 @@ class ManagerRekapController extends Controller
 		Artisan::call('create:rekappenerimaan');
 
         return Redirect::to('/backend/rekap-penerimaan-unit')
-            ->with('success', "Data Berhasil Disinkronisasi.")
+            ->with('success', 'Data Berhasil Disinkronisasi.')
             ->with('mode', 'success');
     }
 }

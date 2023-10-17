@@ -119,8 +119,9 @@ class RekapController extends Controller
     public function sinkron_data(){
         $unit = Session::get('userinfo')['id_unit'];
         Artisan::call('create:rekappenerimaanunit', ['unit'=>$unit]);
+
         return Redirect::to('/backend/rekap-penerimaan')
-                ->with('success', "Data berhasil direkap.")
-                ->with('mode', 'success');
+            ->with('success', 'Data berhasil direkap.')
+            ->with('mode', 'success');
     }
 }
