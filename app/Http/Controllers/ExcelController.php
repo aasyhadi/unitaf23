@@ -297,5 +297,42 @@ class ExcelController extends Controller {
 	
 	}
 
+	public function export_penjualan_kategori($type, Request $request)
+	{
+		$bulan_select = $request->input('bulan');;
+		$id_kategori = $request->input('kategori');
+        $id_unit = Session::get('userinfo')['id_unit'];
+        $data  = DB::select("SELECT
+                    p.created_at,
+                    b.kode,
+                    b.nama,
+                    p.jumlah,
+                    p.harga,
+                    ( p.jumlah * p.harga ) AS total 
+                FROM
+                    penjualan_d AS p
+                    LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
+                    LEFT JOIN barang AS b ON b.id = p.id_barang
+                    LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori 
+                WHERE
+                    b.id_kategori = $id_kategori
+                    AND h.id_unit = $id_unit 
+                    AND h.active != 0 
+                    AND substr( p.created_at, 6, 2 ) = $bulan_select
+                	AND left(p.created_at,4) =2023
+				ORDER BY p.created_at ASC");
+
+		$data= json_decode( json_encode($data), true);
+		
+	 	return Excel::create('export_penjualan_kategori', function($excel) use ($data) {
+			$excel->sheet('List Penjualan Kategori', function($sheet) use ($data)
+	        {
+				$sheet->fromArray($data);
+	        });
+		})->download($type); 
+
+
+	}
+
 
 }

@@ -120,6 +120,7 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin']), functi
 	Route::get('/user/export/{type}','ExcelController@export_umkm');
 	Route::get('/user/export/{type}','ExcelController@export_penjualan_unit');
 	Route::get('/user/export/{type}','ExcelController@export_umkm_unit');
+	Route::get('/user/export/{type}','ExcelController@export_penjualan_kategori');
 
 	Route::get('/media-library/datatable/','Backend\MediaLibraryController@datatable');
 	Route::get('/media-library','Backend\MediaLibraryController@index');

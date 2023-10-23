@@ -147,6 +147,60 @@
 			</div>
 		</div>					
 	</div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="x_panel" style="background-color: #eab676;">
+                <div class="x_content">
+                    <h2>Laporan Export Excel</h2>
+                    <form id="form-work" class="form-horizontal" action="{{ url('/backend/user/export/xls') }}" role="form" autocomplete="off" method="GET" >
+                        {!! csrf_field() !!}
+
+                        <div class="row">
+
+                        <div class="col-xs-12 col-sm-2" style="margin-top:7px;">
+                            Periode 
+                        </div>
+                        <div class="col-xs-12 col-sm-3">
+                            <select class="form-control" name="bulan" id="bulan" required="required">
+							@if(count($bulan))
+                                <?php $n = 0;?>
+								@foreach($bulan as $b)
+									<option value="{{$n}}" @if($bulan_select==$n) selected="selected" @endif>
+										@if($n>0) Bulan @else Pilih Kategori... @endif {{$b}}
+									</option>
+									<?php $n++;?>
+								@endforeach
+							@endif
+							</select>
+                        </div>
+
+                            <div class="col-xs-12 col-sm-2" style="margin-top:7px;">
+                                Kategori Barang
+                            </div>
+                            <div class="col-xs-12 col-sm-3">
+                                <select class="form-control" name="kategori" id="kategori" required="required">
+									@if(count($kategori))
+									    <?php $n = 0;?>
+									    @foreach($kategori as $k)
+										<option value="{{$n}}" @if($kategori_select==$n) selected="selected" @endif>
+											@if($n>0) Kategori @else Pilih Kategori... @endif {{$k}}
+										</option>
+										<?php $n++;?>
+										@endforeach
+									@endif
+								</select>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-2">
+                                <button type="submit" class="btn btn-primary btn-block">Export Excel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 <!-- CSS -->
