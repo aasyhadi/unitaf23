@@ -121,10 +121,17 @@ class ManagerController extends Controller
 		$startDateQuery = date("Y-m-d", strtotime($startDate));
         $endDateQuery = date("Y-m-d", strtotime($endDate));
         if ($mode == "all"){
-            $data = PenjualanH::where('penjualan_h.active', '!=', 0)->where('penjualan_h.id_unit','=',$id_unit)->orderBy('penjualan_h.tanggal', 'ASC');
+            $data = PenjualanH::where('penjualan_h.active', '!=', 0)
+                ->whereBetween('tanggal', [$startDateQuery, $endDateQuery])
+                ->orderBy('penjualan_h.tanggal', 'ASC')
+                ->leftJoin('unit', 'unit.id_unit', '=', 'penjualan_h.id_unit');
         } else 
         if ($mode == "limited"){
-            $data = PenjualanH::where('penjualan_h.active', '!=', 0)->where('penjualan_h.id_unit','=',$id_unit)->whereBetween('tanggal', [$startDateQuery, $endDateQuery])->orderBy('penjualan_h.tanggal', 'ASC');
+            $data = PenjualanH::where('penjualan_h.active', '!=', 0)
+                ->where('penjualan_h.id_unit','=',$id_unit)
+                ->whereBetween('tanggal', [$startDateQuery, $endDateQuery])
+                ->orderBy('penjualan_h.tanggal', 'ASC')
+                ->leftJoin('unit', 'unit.id_unit', '=', 'penjualan_h.id_unit');
         }
         
         $data = $data->get();
@@ -140,14 +147,6 @@ class ManagerController extends Controller
         //
         Session::forget('success');
         Session::forget('mode');
-        if (isset($_GET['id_unit']) && $_GET['id_unit']!=""){
-            $id_unit = $_GET['id_unit'];
-            $nm_unit = DB::table("unit")->where('id_unit','=',$_GET['id_unit'])->pluck('nama_unit')[0];
-            Session::flash('success', 'Data penjualan per kategori unit '.$nm_unit);
-            Session::flash('mode', 'success');
-        }else{
-            $id_unit = 0;
-        }
         if (isset($_GET['bulan']) && $_GET['bulan']!=""){
             $bulan = $_GET['bulan'];
         }else{
@@ -157,9 +156,40 @@ class ManagerController extends Controller
             $kategori = $_GET['kategori'];
         }else{
             $kategori = 0;
-        }      
+        }
 
-        $data  = DB::select("SELECT
+        if (isset($_GET['id_unit']) && $_GET['id_unit']!="" && $_GET['id_unit']!="0"){
+            $id_unit = $_GET['id_unit'];
+            $nm_unit = DB::table("unit")->where('id_unit','=',$_GET['id_unit'])->pluck('nama_unit')[0];
+            Session::flash('success', 'Data penjualan per kategori unit '.$nm_unit);
+            Session::flash('mode', 'success');
+
+            $data  = DB::select("SELECT
+                    u.nama_unit,
+                    b.id,
+                    b.kode,
+                    b.nama,
+                    sum(p.jumlah) as jumlah,
+                    p.harga,
+                    ( sum(p.jumlah) * p.harga ) AS total
+                FROM
+                    penjualan_d AS p
+                    LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
+                    LEFT JOIN barang AS b ON b.id = p.id_barang
+                    LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori 
+                    LEFT JOIN unit AS u ON u.id_unit = b.id_unit
+                WHERE
+                    b.id_kategori = $kategori
+                    AND h.id_unit = $id_unit 
+                    AND h.active != 0 
+                    AND substr( p.created_at, 6, 2 ) = $bulan
+                GROUP BY u.nama_unit,b.id,b.kode,b.nama,p.harga"); 
+
+        } else {
+            $id_unit = 0;
+
+            $data  = DB::select("SELECT
+                    u.nama_unit,
                     b.id,
                     b.kode,
                     b.nama,
@@ -171,17 +201,20 @@ class ManagerController extends Controller
                     LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
                     LEFT JOIN barang AS b ON b.id = p.id_barang
                     LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori 
+                    LEFT JOIN unit AS u ON u.id_unit = b.id_unit
                 WHERE
                     b.id_kategori = $kategori
-                    AND h.id_unit = $id_unit 
+                    AND h.id_unit > $id_unit 
                     AND h.active != 0 
                     AND substr( p.created_at, 6, 2 ) = $bulan
-                GROUP BY b.id,b.kode,b.nama,p.harga");
-
+                GROUP BY u.nama_unit,b.id,b.kode,b.nama,p.harga"); 
+        } 
+        
         view()->share('bulan',$kategori);
         view()->share('bulan',$bulan);
         view()->share('id_unit',$id_unit);
         return view('backend.laporan-unit.rekap_kategori', compact('data'));
+    
     }
 
     public function index_umkm()
@@ -220,10 +253,17 @@ class ManagerController extends Controller
 		$startDateQuery = date("Y-m-d", strtotime($startDate));
         $endDateQuery = date("Y-m-d", strtotime($endDate));
         if ($mode == "all"){
-            $data = KeepH::where('keep_h.active', '!=', 0)->where('keep_h.id_unit','=',$id_unit)->orderBy('keep_h.tanggal', 'ASC');
+            $data = KeepH::where('keep_h.active', '!=', 0)
+                ->whereBetween('tanggal', [$startDateQuery, $endDateQuery])
+                ->orderBy('keep_h.tanggal', 'ASC')
+                ->leftJoin('unit', 'unit.id_unit', '=', 'keep_h.id_unit');
         } else 
         if ($mode == "limited"){
-            $data = KeepH::where('keep_h.active', '!=', 0)->where('keep_h.id_unit','=',$id_unit)->whereBetween('tanggal', [$startDateQuery, $endDateQuery])->orderBy('keep_h.tanggal', 'ASC');
+            $data = KeepH::where('keep_h.active', '!=', 0)
+                ->where('keep_h.id_unit','=',$id_unit)
+                ->whereBetween('tanggal', [$startDateQuery, $endDateQuery])
+                ->orderBy('keep_h.tanggal', 'ASC')
+                ->leftJoin('unit', 'unit.id_unit', '=', 'keep_h.id_unit');
         }
         $data = $data->get();
 

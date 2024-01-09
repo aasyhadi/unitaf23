@@ -81,7 +81,7 @@
                                     <?php $n = 0;?>
                                     @foreach($id_unit as $u)
                                         <option value="{{$n}}" @if($unit_select==$n) selected="selected" @endif>
-                                            @if($n>0) Unit @else Pilih Unit... @endif {{$u}}
+                                            @if($n>0) Unit @else Semua Unit Usaha @endif {{$u}}
                                         </option>
                                         <?php $n++;?>
                                     @endforeach
@@ -141,11 +141,13 @@
                         <table class="table table-striped table-hover table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
+                                    <th>Nama Unit</th>
                                     <th>Kode Barcode</th>
                                     <th>Nama Barang</th>
                                     <th>Jumlah</th>
                                     <th>Harga Jual</th>
                                     <th>Total</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -154,7 +156,7 @@
                                     foreach ($data as $item):
                                 ?>
                                     <tr>
-                                       
+                                        <td><?=$item->nama_unit;?></td>
                                         <td><?=$item->kode;?></td>
                                         <td><?=$item->nama;?></td>
                                         <td><?=$item->jumlah;?></td>
@@ -166,7 +168,7 @@
                                     endforeach;
                                 ?>
                                     <tr>
-                                        <td colspan=5 align=right>
+                                        <td colspan=6 align=right>
                                             <h4>Grand Total : Rp. <?=number_format($total,0,',','.');?></h4>
                                         </td>
                                     </tr>

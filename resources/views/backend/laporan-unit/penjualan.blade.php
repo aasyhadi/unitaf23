@@ -50,7 +50,7 @@
                                             <?php $n = 0;?>
                                             @foreach($id_unit as $u)
                                             <option value="{{$n}}" @if($unit_select==$n) selected="selected" @endif>
-                                                @if($n>0) Unit @else Pilih Unit... @endif {{$u}}
+                                                @if($n>0) Unit @else Semua Unit Usaha @endif {{$u}}
                                             </option>
                                             <?php $n++;?>
                                             @endforeach
@@ -85,7 +85,7 @@
                                     }
                                 ?>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="mode" value="all" id="show-all" <?=$checked;?>>Tampilkan semua
+                                    <input type="checkbox" name="mode" value="all" id="show-all" <?=$checked;?>>Tampilkan semua unit
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-2">
@@ -109,6 +109,7 @@
                                     <th>ID</th>
                                     <th>No Nota</th>
                                     <th>Tanggal</th>
+                                    <th>Nama Unit</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
@@ -121,6 +122,7 @@
                                         <td><?=$item->id;?></td>
                                         <td><b><a href="<?=url('backend/penjualan/'.$item->id);?>" target=_blank><?=$item->no_nota;?></a></b></td>
                                         <td><?=date('d M Y', strtotime($item->tanggal));?></td>
+                                        <td><?=$item->nama_unit;?></td>
                                         <td><?=number_format($item->total,0,',','.');?></td>
                                     </tr>
                                 <?php
@@ -128,7 +130,7 @@
                                     endforeach;
                                 ?>
                                     <tr>
-                                        <td colspan=4 align=right>
+                                        <td colspan=5 align=right>
                                             <h4>Grand Total : Rp. <?=number_format($total,0,',','.');?></h4>
                                         </td>
                                     </tr>
@@ -158,7 +160,7 @@
                                             <?php $n = 0;?>
                                             @foreach($id_unit as $u)
                                             <option value="{{$n}}" @if($unit_select==$n) selected="selected" @endif>
-                                                @if($n>0) Unit @else Pilih Unit... @endif {{$u}}
+                                                @if($n>0) Unit @else Semua Unit Usaha @endif {{$u}}
                                             </option>
                                             <?php $n++;?>
                                             @endforeach
@@ -193,7 +195,7 @@
                                     }
                                 ?>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="mode" value="all" id="show-all" <?=$checked;?>>Tampilkan semua
+                                    <input type="checkbox" name="mode" value="all" id="show-all" <?=$checked;?>>Tampilkan semua unit
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-2">

@@ -50,7 +50,7 @@
                                             <?php $n = 0;?>
                                             @foreach($id_unit as $u)
                                             <option value="{{$n}}" @if($unit_select==$n) selected="selected" @endif>
-                                                @if($n>0) Unit @else Pilih Unit... @endif {{$u}}
+                                                @if($n>0) Unit @else Semua Unit Usaha @endif {{$u}}
                                             </option>
                                             <?php $n++;?>
                                             @endforeach
@@ -109,6 +109,7 @@
                                     <th>ID</th>
                                     <th>No Nota</th>
                                     <th>Tanggal</th>
+                                    <th>Nama Unit</th>
                                     <th>Pembayaran</th>
                                     <th>Bagi Hasil</th>
                                 </tr>
@@ -123,6 +124,7 @@
                                         <td><?=$item->id;?></td>
                                         <td><b><a href="<?=url('backend/penjualan-umkm/'.$item->id);?>" target=_blank><?=$item->no_inv;?></a></b></td>
                                         <td><?=date('d M Y', strtotime($item->tanggal));?></td>
+                                        <td><?=$item->nama_unit;?></td>
                                         <td><?=number_format($item->total,0,',','.');?></td>
                                         <td><?=number_format($item->bagi_hasil,0,',','.');?></td>
                                     </tr>
@@ -132,7 +134,7 @@
                                     endforeach;
                                 ?>
                                     <tr>
-                                        <td colspan=5 align=right>
+                                        <td colspan=6 align=right>
                                             <h4>Grand Total Bagi Hasil : Rp. <?=number_format($bagi_hasil,0,',','.');?></h4>
                                         </td>
                                     </tr>
@@ -162,7 +164,7 @@
                                             <?php $n = 0;?>
                                             @foreach($id_unit as $u)
                                             <option value="{{$n}}" @if($unit_select==$n) selected="selected" @endif>
-                                                @if($n>0) Unit @else Pilih Unit... @endif {{$u}}
+                                                @if($n>0) Unit @else Semua Unit Usaha @endif {{$u}}
                                             </option>
                                             <?php $n++;?>
                                             @endforeach
