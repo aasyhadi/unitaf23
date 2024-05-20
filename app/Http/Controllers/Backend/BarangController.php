@@ -218,7 +218,7 @@ class BarangController extends Controller
 
         $data = Barang::select('barang.*')
             ->where('barang.id_kategori', '!=', 4)
-		    ->where('barang.active', '!=', 0)
+		    ->where('barang.active', '<', 2)
             ->where('barang.stok_total', '>', 0)
             ->where('barang.id_unit', '=', Session::get('userinfo')['id_unit']);
 		

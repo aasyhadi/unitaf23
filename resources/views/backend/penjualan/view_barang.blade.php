@@ -7,7 +7,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Kode</th>
-                        <th>Nama</th>
+                        <th>Nama Barang</th>
                         <th>Harga Jual</th>
                         <th>Harga Beli</th>
                         <th>Stok</th>
