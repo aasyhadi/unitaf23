@@ -88,6 +88,7 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin', 'token_a
 	Route::get('/penjualan/create','Backend\PenjualanController@create');
 	Route::post('/penjualan','Backend\PenjualanController@store');
 	Route::delete('/penjualan/{id}','Backend\PenjualanController@destroy');
+	Route::get('/penjualan/check-stok', 'Backend\PenjualanController@checkStok');
 
 	Route::get('/penjualan-barcode/create','Backend\KasirController@create');
 	Route::post('/penjualan-barcode','Backend\KasirController@store');

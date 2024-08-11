@@ -36,7 +36,7 @@ class PenjualanController extends Controller
      */
     public function create()
     {
-        //
+        
 		return view ('backend.penjualan.update');
     }
 
@@ -187,5 +187,37 @@ class PenjualanController extends Controller
 	public function popup_media_barang($id_count = null) {
 		return view ('backend.penjualan.view_barang')->with('id_count', $id_count);
 	}
+
+    public function checkStok(Request $request) {
+        // Periksa apakah 'id_bahan_baku' ada dan tidak kosong
+        if (!isset($request->id_bahan_baku) || empty($request->id_bahan_baku)) {
+            return response()->json(['status' => 'error', 'message' => 'ID barang tidak ditemukan']);
+        } 
     
+        $id_bahan_baku = $request->id_bahan_baku;
+        $jumlah = $request->jumlah;
+        $stok = Barang::where('id', $id_bahan_baku)->first();
+    
+        // Jika stok tidak ditemukan, kembalikan respons error
+        if (!$stok) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Barang tidak ditemukan'
+            ]);
+        }
+    
+        // Periksa apakah jumlah yang diminta lebih besar dari stok yang tersedia
+        if ($jumlah > $stok->stok_total) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Jumlah yang diminta melebihi stok yang tersedia',
+                'available_stock' => $stok->stok_total
+            ]);
+        }
+    
+        // Jika tidak ada masalah, kembalikan status success
+        return response()->json(['status' => 'success']);
+    }
+    
+
 }

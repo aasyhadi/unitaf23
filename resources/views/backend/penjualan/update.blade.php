@@ -12,6 +12,7 @@
 	}
 ?>
 
+
 <!-- LAYOUT -->
 @extends('backend.layouts.main')
 
@@ -187,7 +188,6 @@
 
 <!-- CSS -->
 @section('css')
-
 @endsection
 
 <!-- JAVASCRIPT -->
@@ -197,18 +197,40 @@
         var addButton = $('.add_button');
         var wrapper = $('.field_wrapper');
         var x = <?=$detail_count + 1;?>;
-        $(addButton).click(function(){ //Once add button is clicked
-            x++;
-            var url = "<?=url('/')?>";
-            url = url + '/backend/penjualan/barang/popup-media/' + x;
-            $(wrapper).append('<div class="row" style="margin-bottom:10px;"><div class="col-sm-3"><input type="hidden" name="id_bahan_baku[]" id="id_bahan_baku_'+x+'"> <input readonly type="text" name="nama_bahan_baku[]" id="nama_bahan_baku_'+x+'" class="form-control" placeholder="Nama Barang" required></div><div class="col-sm-2"><a href="'+url+'" class="btn btn-success browse-bahan-baku" title="Browse">Browse</a></div><div class="col-sm-3"><input type="text" name="harga[]" id="harga_'+x+'" class="form-control" placeholder="Harga" required></div><div class="col-sm-2"><div class="input-group"><input type="text" name="jumlah[]" id="jumlah_'+x+'" class="form-control" placeholder="Jumlah" required></div></div><div class="col-sm-2"><a href="javascript:void(0);" class="remove_button btn btn-danger" title="Hapus Baris">Hapus Baris</a></div><br/></div>'); 
+
+        $(addButton).click(function(e) {
+            e.preventDefault(); 
+            var id_bahan_baku = $(wrapper).find('input[name="id_bahan_baku[]"]:last').val();
+            var jumlah = $(wrapper).find('input[name="jumlah[]"]:last').val();
+            $.ajax({
+                type: 'GET',
+                url: '/backend/penjualan/check-stok',
+                data: {
+                    id_bahan_baku: id_bahan_baku,
+                    jumlah: jumlah
+                },
+                success: function(response) {
+                    if (response.status === 'error') {
+                        alert(response.message);
+                    } else if (response.status === 'success' && response.message) {
+                        alert(response.message + '\nStok tersedia: ' + response.available_stock);
+                    } else {
+                        x++;
+                        var url = "<?=url('/')?>";
+                        url = url + '/backend/penjualan/barang/popup-media/' + x;
+                        $(wrapper).append('<div class="row" style="margin-bottom:10px;"><div class="col-sm-3"><input type="hidden" name="id_bahan_baku[]" id="id_bahan_baku_'+x+'"> <input readonly type="text" name="nama_bahan_baku[]" id="nama_bahan_baku_'+x+'" class="form-control" placeholder="Nama Barang" required></div><div class="col-sm-2"><a href="'+url+'" class="btn btn-success browse-bahan-baku" title="Browse">Browse</a></div><div class="col-sm-3"><input type="text" name="harga[]" id="harga_'+x+'" class="form-control" placeholder="Harga" required></div><div class="col-sm-2"><div class="input-group"><input type="text" name="jumlah[]" id="jumlah_'+x+'" class="form-control" placeholder="Jumlah" required></div></div><div class="col-sm-2"><a href="javascript:void(0);" class="remove_button btn btn-danger" title="Hapus Baris">Hapus Baris</a></div><br/></div>'); 
+                    }
+                }
+            });
         });
+
         $(wrapper).on('click', '.remove_button', function(e){ 
             if (confirm("Apakah anda yakin mau menghapus baris ini?")) {
                 e.preventDefault();
                 $(this).parent().parent().remove(); 
             }
         });
+
     });
 </script>
 
