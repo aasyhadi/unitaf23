@@ -204,8 +204,7 @@
             var jumlah = $(wrapper).find('input[name="jumlah[]"]:last').val();
             $.ajax({
                 type: 'GET',
-                url: 'https://unitaf.my.id/backend/penjualan/check-stok',
-                dataType: "jsonp",
+                url: 'https://unitaf.my.id/penjualan/check-stok',
                 data: {
                     id_bahan_baku: id_bahan_baku,
                     jumlah: jumlah
