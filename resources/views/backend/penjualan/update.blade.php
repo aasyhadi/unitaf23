@@ -205,6 +205,7 @@
             $.ajax({
                 type: 'GET',
                 url: 'https://unitaf.my.id/backend/penjualan/check-stok',
+                dataType: "jsonp",
                 data: {
                     id_bahan_baku: id_bahan_baku,
                     jumlah: jumlah
