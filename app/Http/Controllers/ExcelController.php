@@ -319,7 +319,7 @@ class ExcelController extends Controller {
                     AND h.id_unit = $id_unit 
                     AND h.active != 0 
                     AND substr( p.created_at, 6, 2 ) = $bulan_select
-                	AND left(p.created_at,4) =2023
+                	AND left(p.created_at,4) =2024
 				ORDER BY p.created_at ASC");
 
 		$data= json_decode( json_encode($data), true);
