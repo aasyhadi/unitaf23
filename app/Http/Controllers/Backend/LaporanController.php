@@ -54,7 +54,10 @@ class LaporanController extends Controller
         $endDateQuery = date("Y-m-d", strtotime($endDate));
         if ($status == '0'){
             if ($mode == "all"){
-                $data = PurchaseH::select('purchase_h.*','supplier.nama')->leftJoin('supplier', 'purchase_h.id_sup', '=', 'supplier.id')->where('purchase_h.active', '!=', 0)->where('purchase_h.id_unit','=',Session::get('userinfo')['id_unit']);
+                $data = PurchaseH::select('purchase_h.*','supplier.nama')->leftJoin('supplier', 'purchase_h.id_sup', '=', 'supplier.id')
+                    ->where('purchase_h.active', '!=', 0)
+                    ->where('purchase_h.id_unit','=',Session::get('userinfo')['id_unit'])
+                    ->orderBy('purchase_h.id', 'desc');
             } else 
             if ($mode == "limited"){
                 $data = PurchaseH::select('purchase_h.*','supplier.nama')->leftJoin('supplier', 'purchase_h.id_sup', '=', 'supplier.id')->where('purchase_h.active', '!=', 0)->where('purchase_h.id_unit','=',Session::get('userinfo')['id_unit'])->whereBetween('tanggal', [$startDateQuery, $endDateQuery]);
@@ -103,7 +106,9 @@ class LaporanController extends Controller
 		$startDateQuery = date("Y-m-d", strtotime($startDate));
         $endDateQuery = date("Y-m-d", strtotime($endDate));
         if ($mode == "all"){
-            $data = PenjualanH::where('penjualan_h.active', '!=', 0)->where('penjualan_h.id_unit','=',Session::get('userinfo')['id_unit']);
+            $data = PenjualanH::where('penjualan_h.active', '!=', 0)
+                ->where('penjualan_h.id_unit','=',Session::get('userinfo')['id_unit'])
+                ->orderBy('penjualan_h.id', 'desc');
         } else 
         if ($mode == "limited"){
             $data = PenjualanH::where('penjualan_h.active', '!=', 0)->where('penjualan_h.id_unit','=',Session::get('userinfo')['id_unit'])->whereBetween('tanggal', [$startDateQuery, $endDateQuery]);
@@ -179,7 +184,9 @@ class LaporanController extends Controller
 		$startDateQuery = date("Y-m-d", strtotime($startDate));
         $endDateQuery = date("Y-m-d", strtotime($endDate));
         if ($mode == "all"){
-            $data = KeepH::where('keep_h.active', '!=', 0)->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit']);
+            $data = KeepH::where('keep_h.active', '!=', 0)
+                    ->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit'])
+                    ->orderBy('keep_h.id', 'desc');
         } else 
         if ($mode == "limited"){
             $data = KeepH::where('keep_h.active', '!=', 0)->where('keep_h.id_unit','=',Session::get('userinfo')['id_unit'])->whereBetween('tanggal', [$startDateQuery, $endDateQuery]);
