@@ -153,6 +153,7 @@ class LaporanController extends Controller
                     AND h.id_unit = $id_unit 
                     AND h.active != 0 
                     AND substr( p.created_at, 6, 2 ) = $bulan_select
+                    AND left(p.created_at,4) =2024
                 GROUP BY b.id,b.kode,b.nama,p.harga");
 
         return view('backend.laporan.rekap_view', compact('data'));
