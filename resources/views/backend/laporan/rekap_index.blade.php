@@ -5,7 +5,7 @@
 	$breadcrumb[1]['title'] = 'Rekap Penjualan';
 	$breadcrumb[1]['url'] = url('backend/rekap-penjualan');
 
-    $kategori = array( 
+    /* $kategori = array( 
 		"0"=>"",
 		"1"=>'Minuman & Ice Cream', 
 		"2"=>'Alat Tulis Sekolah', 
@@ -15,7 +15,16 @@
         "6"=>'...',
         "7"=>'...',
         "8"=>'Kangen Water'); 
-	$kategori_select = request('kategori');
+	$kategori_select = request('kategori'); */
+
+    $kategori = array(
+        "1" => 'Minuman & Ice Cream',
+        "2" => 'Alat Tulis Sekolah',
+        "3" => 'Seragam & Perlengkapan Sekolah',
+        "5" => 'TERA',
+        "8" => 'Kangen Water'
+    );
+    $kategori_select = request('kategori');
 
     if(!$list_kategori){
 		$list_kategori = 1;
@@ -41,6 +50,12 @@
 		$bulan_ini  = (int)date('m');
 		$bulan_select = $bulan_ini;
 	}
+
+    $currentYear = date('Y');
+    $tahun_select = request('tahun') ?: $currentYear;
+
+    $years = range($currentYear - 1, $currentYear + 5);
+    $activeYear = $tahun_select;
 
 ?>
 
@@ -68,40 +83,37 @@
             <div class="x_panel">
                 <div class="x_content">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-1" style="margin-top:7px;">
-                            Periode 
-                        </div>
-                        <div class="col-xs-12 col-sm-5">
+                        <div class="col-xs-12 col-sm-1" style="margin-top:7px;">Periode</div>
+                        <div class="col-xs-12 col-sm-3">
                             <select class="form-control" name="bulan" id="bulan" required="required">
-							@if(count($bulan))
-                                <?php $n = 0;?>
-								@foreach($bulan as $b)
-									<option value="{{$n}}" @if($bulan_select==$n) selected="selected" @endif>
-										@if($n>0) Bulan @else Pilih Kategori... @endif {{$b}}
-									</option>
-									<?php $n++;?>
-								@endforeach
-							@endif
-							</select>
+                                @foreach($bulan as $key => $value)
+                                    <option value="{{ $key }}" {{ $bulan_select == $key ? 'selected' : '' }}>
+                                        {{ $value }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
-                            <div class="col-xs-12 col-sm-2" style="margin-top:7px;">
-                                Kategori Barang
-                            </div>
-                            <div class="col-xs-12 col-sm-4">
-                                <select class="form-control" name="kategori" id="kategori" required="required">
-									@if(count($kategori))
-									    <?php $n = 0;?>
-									    @foreach($kategori as $k)
-										<option value="{{$n}}" @if($kategori_select==$n) selected="selected" @endif>
-											@if($n>0) Kategori @else Pilih Kategori... @endif {{$k}}
-										</option>
-										<?php $n++;?>
-										@endforeach
-									@endif
-								</select>
-                            </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <select class="form-control" name="tahun" id="tahun" required="required">
+                                @foreach($years as $year)
+                                    <option value="{{ $year }}" {{ $year == $activeYear ? 'selected' : '' }}>{{ $year }}</option>
+                                @endforeach
+                            </select>
                         </div>
+
+                        <div class="col-xs-12 col-sm-2" style="margin-top:7px;">Kategori Barang</div>
+                        <div class="col-xs-12 col-sm-4">
+                            <select class="form-control" name="kategori" id="kategori" required="required">
+                                <option value="">Pilih Kategori...</option>
+                                @foreach($kategori as $key => $value)
+                                    <option value="{{ $key }}" {{ $kategori_select == $key ? 'selected' : '' }}>
+                                        {{ $value }}
+                                    </option>
+                                @endforeach
+							</select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,27 +130,17 @@
 
 <!-- JAVASCRIPT -->
 @section('script')
-    
     <script type="text/javascript">
-        $(function(){		 
-            
-            $("#kategori").on('change', function(){
-                $val_bulan = $('#bulan').val();
-                $val_kategori = $('#kategori').val()
-                if($val_bulan !='' && $val_kategori !=''){
-                    /* $tabel1.ajax.url("{{url('laporan-jadwal-kunjungan-tim/dt')}}/"+$bulan+'/'+$kecamatan).load(); */
-                    window.location = '{{url("backend/report-rekap-penjualan")}}/'+$val_kategori+'/'+$val_bulan;
-                }
-            })
+        $(function(){
+            $('#kategori, #bulan, #tahun').on('change', function(){
+                var tahun = $('#tahun').val();
+                var bulan = $('#bulan').val();
+                var kategori = $('#kategori').val();
 
-            $("#bulan").on('change', function(){
-                $val_bulan = $('#bulan').val();
-                $val_kategori = $('#kategori').val()
-                if($val_bulan !='' && $val_kategori !=''){
-                    /* $tabel1.ajax.url("{{url('laporan-jadwal-kunjungan-tim/dt')}}/"+$bulan+'/'+$kecamatan).load(); */
-                    window.location = '{{url("backend/report-rekap-penjualan")}}/'+$val_kategori+'/'+$val_bulan;
+                if(tahun && bulan && kategori) {
+                    window.location.href = '{{ url("backend/report-rekap-penjualan") }}/' + kategori + '/' + bulan + '/' + tahun;
                 }
-            })
-        })
+            });
+        });
     </script>
 @endsection

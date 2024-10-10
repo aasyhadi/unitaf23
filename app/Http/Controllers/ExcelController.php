@@ -299,7 +299,8 @@ class ExcelController extends Controller {
 
 	public function export_penjualan_kategori($type, Request $request)
 	{
-		$bulan_select = $request->input('bulan');;
+		$tahun_select = $request->input('tahun');
+		$bulan_select = $request->input('bulan');
 		$id_kategori = $request->input('kategori');
         $id_unit = Session::get('userinfo')['id_unit'];
         $data  = DB::select("SELECT
@@ -319,7 +320,7 @@ class ExcelController extends Controller {
                     AND h.id_unit = $id_unit 
                     AND h.active != 0 
                     AND substr( p.created_at, 6, 2 ) = $bulan_select
-                	AND left(p.created_at,4) =2024
+                	AND left(p.created_at,4) = $tahun_select
 				ORDER BY p.created_at ASC");
 
 		$data= json_decode( json_encode($data), true);

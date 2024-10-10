@@ -132,7 +132,7 @@ class LaporanController extends Controller
         return view('backend.laporan.rekap_index', compact('list_kategori'));
     }
 
-    public function rekap_penjualan_view($id_kategori, $bulan){
+    public function rekap_penjualan_view($id_kategori, $bulan, $year){
         
         $bulan_select = $bulan;
         $id_unit = Session::get('userinfo')['id_unit'];
@@ -153,7 +153,7 @@ class LaporanController extends Controller
                     AND h.id_unit = $id_unit 
                     AND h.active != 0 
                     AND substr( p.created_at, 6, 2 ) = $bulan_select
-                    AND left(p.created_at,4) =2024
+                    AND left(p.created_at,4) = $year
                 GROUP BY b.id,b.kode,b.nama,p.harga");
 
         return view('backend.laporan.rekap_view', compact('data'));

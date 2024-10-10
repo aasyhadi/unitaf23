@@ -203,7 +203,7 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin']), functi
     Route::get('/report-purchase','Backend\LaporanController@index_purchase');
     Route::get('/report-penjualan','Backend\LaporanController@index_penjualan');
 	Route::get('/report-rekap-penjualan','Backend\LaporanController@rekap_penjualan');
-	Route::get('/report-rekap-penjualan/{kategori}/{bulan}', 'Backend\LaporanController@rekap_penjualan_view');
+	Route::get('/report-rekap-penjualan/{kategori}/{bulan}/{tahun}', 'Backend\LaporanController@rekap_penjualan_view');
 	Route::get('/report-umkm','Backend\LaporanController@index_umkm');
     Route::get('/report-stok','Backend\LaporanController@index_stok');
 
