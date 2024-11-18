@@ -165,9 +165,9 @@
                                 <th>Tanggal</th>
                                 <th>Kode Barcode</th>
                                 <th>Nama Barang</th>
-                                <th>Jumlah (Pcs)</th>
-                                <th>Harga Jual</th>
-                                <th>Total Penjualan</th>
+                                <th style="text-align: right;">Jumlah</th>
+                                <th style="text-align: right;">Harga Jual</th>
+                                <th style="text-align: right;">Total Penjualan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -182,7 +182,7 @@
                             ?>
                                     <tr>
                                         <td colspan="6" align="right"><strong>Subtotal tanggal <?= $currentDate; ?> :</strong></td>
-                                        <td><strong>Rp. <?= number_format($subTotal, 0, ',', '.'); ?></strong></td>
+                                        <td align="right"><strong>Rp. <?= number_format($subTotal, 0, ',', '.'); ?></strong></td>
                                     </tr>
                             <?php
                                         // Reset subtotal setelah ditampilkan
@@ -196,9 +196,9 @@
                                     <td><?= $item->tanggal; ?></td>
                                     <td><?= $item->kode; ?></td>
                                     <td><?= $item->nama; ?></td>
-                                    <td><?= $item->jumlah; ?></td>
-                                    <td><?= number_format($item->harga, 0, ',', '.'); ?></td>
-                                    <td><?= number_format($item->total, 0, ',', '.'); ?></td>
+                                    <td align="right"><?= $item->jumlah; ?></td>
+                                    <td align="right"><?= number_format($item->harga, 0, ',', '.'); ?></td>
+                                    <td align="right"><?= number_format($item->total, 0, ',', '.'); ?></td>
                                 </tr>
                             <?php
                                     // Tambahkan total per item ke subtotal dan grand total
@@ -212,14 +212,14 @@
                             ?>
                                 <tr>
                                     <td colspan="6" align="right"><strong>Subtotal tanggal <?= $currentDate; ?> :</strong></td>
-                                    <td><strong>Rp. <?= number_format($subTotal, 0, ',', '.'); ?></strong></td>
+                                    <td align="right"><strong>Rp. <?= number_format($subTotal, 0, ',', '.'); ?></strong></td>
                                 </tr>
                             <?php endif; ?>
 
                             <!-- Grand Total Keseluruhan -->
                             <tr>
                                 <td colspan="6" align="right"><h4>Grand Total :</h4></td>
-                                <td><h4>Rp. <?= number_format($grandTotal, 0, ',', '.'); ?></h4></td>
+                                <td align="right"><h4>Rp. <?= number_format($grandTotal, 0, ',', '.'); ?></h4></td>
                             </tr>
                         </tbody>
                     </table>
