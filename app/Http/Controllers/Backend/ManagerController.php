@@ -157,65 +157,226 @@ class ManagerController extends Controller
         }else{
             $kategori = 0;
         }
+        if (isset($_GET['tahun']) && $_GET['tahun'] != "") {
+            $year = $_GET['tahun'];
+        } else {
+            $year = 0;
+        }
 
         if (isset($_GET['id_unit']) && $_GET['id_unit']!="" && $_GET['id_unit']!="0"){
             $id_unit = $_GET['id_unit'];
             $nm_unit = DB::table("unit")->where('id_unit','=',$_GET['id_unit'])->pluck('nama_unit')[0];
             Session::flash('success', 'Data penjualan per kategori unit '.$nm_unit);
             Session::flash('mode', 'success');
-
+            
             $data  = DB::select("SELECT
-                    u.nama_unit,
-                    b.id,
-                    b.kode,
-                    b.nama,
-                    sum(p.jumlah) as jumlah,
-                    p.harga,
-                    ( sum(p.jumlah) * p.harga ) AS total
-                FROM
-                    penjualan_d AS p
-                    LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
-                    LEFT JOIN barang AS b ON b.id = p.id_barang
-                    LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori 
-                    LEFT JOIN unit AS u ON u.id_unit = b.id_unit
-                WHERE
-                    b.id_kategori = $kategori
-                    AND h.id_unit = $id_unit 
-                    AND h.active != 0 
-                    AND substr( p.created_at, 6, 2 ) = $bulan
-                GROUP BY u.nama_unit,b.id,b.kode,b.nama,p.harga"); 
-
+                        u.nama_unit,
+                        h.tanggal,
+                        b.kode,
+                        b.nama,
+                        sum( p.jumlah ) AS jumlah,
+                        p.harga,
+                        ( sum( p.jumlah ) * p.harga ) AS total 
+                    FROM
+                        penjualan_d AS p
+                        LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
+                        LEFT JOIN barang AS b ON b.id = p.id_barang
+                        LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori
+                        LEFT JOIN unit AS u ON u.id_unit = b.id_unit 
+                    WHERE
+                        b.id_kategori = $kategori
+                        AND h.id_unit = $id_unit
+                        AND h.active != 0 
+                        AND MONTH(h.tanggal) = $bulan
+                        AND YEAR(h.tanggal) = $year
+                    GROUP BY
+                        u.nama_unit,
+                        h.tanggal,
+                        b.kode,
+                        b.nama,
+                        p.harga"); 
         } else {
             $id_unit = 0;
-
             $data  = DB::select("SELECT
-                    u.nama_unit,
-                    b.id,
-                    b.kode,
-                    b.nama,
-                    sum(p.jumlah) as jumlah,
-                    p.harga,
-                    ( sum(p.jumlah) * p.harga ) AS total 
-                FROM
-                    penjualan_d AS p
-                    LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
-                    LEFT JOIN barang AS b ON b.id = p.id_barang
-                    LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori 
-                    LEFT JOIN unit AS u ON u.id_unit = b.id_unit
-                WHERE
-                    b.id_kategori = $kategori
-                    AND h.id_unit > $id_unit 
-                    AND h.active != 0 
-                    AND substr( p.created_at, 6, 2 ) = $bulan
-                GROUP BY u.nama_unit,b.id,b.kode,b.nama,p.harga"); 
+                        u.nama_unit,
+                        h.tanggal,
+                        b.kode,
+                        b.nama,
+                        sum( p.jumlah ) AS jumlah,
+                        p.harga,
+                        ( sum( p.jumlah ) * p.harga ) AS total 
+                    FROM
+                        penjualan_d AS p
+                        LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
+                        LEFT JOIN barang AS b ON b.id = p.id_barang
+                        LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori
+                        LEFT JOIN unit AS u ON u.id_unit = b.id_unit 
+                    WHERE
+                        b.id_kategori = $kategori
+                        AND h.id_unit > $id_unit
+                        AND h.active != 0 
+                        AND MONTH(h.tanggal) = $bulan
+                    AND YEAR(h.tanggal) = $year
+                    GROUP BY
+                        u.nama_unit,
+                        h.tanggal,
+                        b.kode,
+                        b.nama,
+                        p.harga"); 
         } 
         
-        view()->share('bulan',$kategori);
+        view()->share('kategori',$kategori);
         view()->share('bulan',$bulan);
+        view()->share('tahun',$year);
         view()->share('id_unit',$id_unit);
         return view('backend.laporan-unit.rekap_kategori', compact('data'));
     
     }
+
+    public function statistik_kategori()
+    {
+        Session::forget('success');
+        Session::forget('mode');
+        $semester = request('semester', 1); // Default semester 1 if not provided
+        $year = request('tahun', now()->year); // Default to current year if not provided
+        $semester = in_array($semester, [1, 2]) ? $semester : 1;
+    
+        // Determine semester months and flash session messages
+        if ($semester == 1) {
+            $startMonth = 1;
+            $endMonth = 6;
+            $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni'];
+            Session::flash('success', 'Statistik penjualan semester ganjil ' . $year);
+        } else {
+            $startMonth = 7;
+            $endMonth = 12;
+            $bulan = ['Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            Session::flash('success', 'Statistik penjualan semester genap ' . $year);
+        }
+    
+        Session::flash('mode', 'success');
+        $data = DB::select("
+            SELECT
+                k.id_kategori,
+                k.nama_kategori,
+                SUM(CASE WHEN MONTH(h.tanggal) = 1 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_januari,
+                SUM(CASE WHEN MONTH(h.tanggal) = 2 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_februari,
+                SUM(CASE WHEN MONTH(h.tanggal) = 3 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_maret,
+                SUM(CASE WHEN MONTH(h.tanggal) = 4 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_april,
+                SUM(CASE WHEN MONTH(h.tanggal) = 5 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_mei,
+                SUM(CASE WHEN MONTH(h.tanggal) = 6 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_juni,
+                SUM(CASE WHEN MONTH(h.tanggal) = 7 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_juli,
+                SUM(CASE WHEN MONTH(h.tanggal) = 8 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_agustus,
+                SUM(CASE WHEN MONTH(h.tanggal) = 9 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_september,
+                SUM(CASE WHEN MONTH(h.tanggal) = 10 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_oktober,
+                SUM(CASE WHEN MONTH(h.tanggal) = 11 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_november,
+                SUM(CASE WHEN MONTH(h.tanggal) = 12 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_desember,
+                SUM(p.jumlah * p.harga) AS total_penjualan
+            FROM
+                penjualan_d AS p
+                LEFT JOIN barang AS b ON b.id = p.id_barang
+                LEFT JOIN kategori_barang AS k ON b.id_kategori = k.id_kategori
+                LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
+            WHERE
+                h.active = 1
+                AND YEAR(h.tanggal) = :year
+                AND MONTH(h.tanggal) BETWEEN :startMonth AND :endMonth
+            GROUP BY
+                k.id_kategori, k.nama_kategori
+            UNION ALL
+            SELECT
+                0 AS id_kategori,
+                'Penitipan Kantin' AS nama_kategori,
+                SUM(CASE WHEN MONTH(tanggal) = 1 THEN bagi_hasil ELSE 0 END) AS sale_januari,
+                SUM(CASE WHEN MONTH(tanggal) = 2 THEN bagi_hasil ELSE 0 END) AS sale_februari,
+                SUM(CASE WHEN MONTH(tanggal) = 3 THEN bagi_hasil ELSE 0 END) AS sale_maret,
+                SUM(CASE WHEN MONTH(tanggal) = 4 THEN bagi_hasil ELSE 0 END) AS sale_april,
+                SUM(CASE WHEN MONTH(tanggal) = 5 THEN bagi_hasil ELSE 0 END) AS sale_mei,
+                SUM(CASE WHEN MONTH(tanggal) = 6 THEN bagi_hasil ELSE 0 END) AS sale_juni,
+                SUM(CASE WHEN MONTH(tanggal) = 7 THEN bagi_hasil ELSE 0 END) AS sale_juli,
+                SUM(CASE WHEN MONTH(tanggal) = 8 THEN bagi_hasil ELSE 0 END) AS sale_agustus,
+                SUM(CASE WHEN MONTH(tanggal) = 9 THEN bagi_hasil ELSE 0 END) AS sale_september,
+                SUM(CASE WHEN MONTH(tanggal) = 10 THEN bagi_hasil ELSE 0 END) AS sale_oktober,
+                SUM(CASE WHEN MONTH(tanggal) = 11 THEN bagi_hasil ELSE 0 END) AS sale_november,
+                SUM(CASE WHEN MONTH(tanggal) = 12 THEN bagi_hasil ELSE 0 END) AS sale_desember,
+                SUM(bagi_hasil) AS total_penjualan
+            FROM
+                keep_h 
+            WHERE
+                active = 1
+                AND YEAR(tanggal) = $year
+                AND MONTH(tanggal) BETWEEN $startMonth AND $endMonth"
+        ,[
+            'year' => $year,
+            'startMonth' => $startMonth,
+            'endMonth' => $endMonth,
+        ]);
+    
+        return view('backend.laporan-unit.statistikkategori', compact('data', 'semester', 'bulan', 'year'));
+    }
+
+    public function statistik_unit()
+    {
+        Session::forget('success');
+        Session::forget('mode');
+        $semester = request('semester', 1); // Default 1 jika tidak ada
+        $year = request('tahun', now()->year); // Default tahun saat ini jika tidak ada
+        $semester = in_array($semester, [1, 2]) ? $semester : 1;
+
+        if ($semester == 1) {
+            // Semester Ganjil (Januari–Juni)
+            $startMonth = 1;
+            $endMonth = 6;
+            $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni'];
+            Session::flash('success', 'Statistik penjualan semester ganjil ' . $year);
+        } else {
+            // Semester Genap (Juli–Desember)
+            $startMonth = 7;
+            $endMonth = 12;
+            $bulan = ['Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            Session::flash('success', 'Statistik penjualan semester genap ' . $year);
+        }
+
+        Session::flash('mode', 'success');
+        $data = DB::select("
+            SELECT
+                k.id_unit,
+                k.nama_unit,
+                SUM(CASE WHEN MONTH(h.tanggal) = 1 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_januari,
+                SUM(CASE WHEN MONTH(h.tanggal) = 2 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_februari,
+                SUM(CASE WHEN MONTH(h.tanggal) = 3 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_maret,
+                SUM(CASE WHEN MONTH(h.tanggal) = 4 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_april,
+                SUM(CASE WHEN MONTH(h.tanggal) = 5 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_mei,
+                SUM(CASE WHEN MONTH(h.tanggal) = 6 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_juni,
+                SUM(CASE WHEN MONTH(h.tanggal) = 7 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_juli,
+                SUM(CASE WHEN MONTH(h.tanggal) = 8 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_agustus,
+                SUM(CASE WHEN MONTH(h.tanggal) = 9 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_september,
+                SUM(CASE WHEN MONTH(h.tanggal) = 10 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_oktober,
+                SUM(CASE WHEN MONTH(h.tanggal) = 11 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_november,
+                SUM(CASE WHEN MONTH(h.tanggal) = 12 THEN (p.jumlah * p.harga) ELSE 0 END) AS sale_desember,
+                SUM(p.jumlah * p.harga) AS total_penjualan
+            FROM
+                penjualan_d AS p
+            LEFT JOIN barang AS b ON b.id = p.id_barang
+            LEFT JOIN unit AS k ON b.id_unit= k.id_unit
+            LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
+            WHERE
+                h.active = 1
+                AND YEAR(h.tanggal) = :year
+                AND MONTH(h.tanggal) BETWEEN :startMonth AND :endMonth
+            GROUP BY
+                k.id_unit, k.nama_unit
+            ORDER BY
+                k.id_unit ASC
+        ", [
+            'year' => $year,
+            'startMonth' => $startMonth,
+            'endMonth' => $endMonth,
+        ]);
+
+        return view('backend.laporan-unit.statistikunit', compact('data', 'semester', 'bulan', 'year'));
+    }
+
 
     public function index_umkm()
     {
@@ -244,7 +405,7 @@ class ManagerController extends Controller
         if (isset($_GET['id_unit']) && $_GET['id_unit']!=""){
 			$id_unit = $_GET['id_unit'];
             $nm_unit = DB::table("unit")->where('id_unit','=',$_GET['id_unit'])->pluck('nama_unit')[0];
-            Session::flash('success', 'Data penjualan umkm unit '.$nm_unit);
+            Session::flash('success', 'Data penjualan jajanan unit '.$nm_unit);
             Session::flash('mode', 'success');
 		}else{
 			$id_unit = 0;
@@ -279,34 +440,47 @@ class ManagerController extends Controller
         //
         Session::forget('success');
         Session::forget('mode');
-        if (isset($_GET['bulan']) && $_GET['bulan']!=""){
-            $bulan = $_GET['bulan'];
-        }else{
-            $bulan = 0;
-        } 
+        // Mengambil parameter bulan dan tahun
+        $bulan = $_GET['bulan'] ?? 0;
+        $year = $_GET['tahun'] ?? 0;
 
         $data  = DB::select("SELECT
-                    b.id,
+                    h.tanggal,
                     b.kode,
                     b.nama,
-                    sum(p.jumlah) as jumlah,
+                    sum( p.jumlah ) AS jumlah,
                     p.harga,
-                    ( sum(p.jumlah) * p.harga ) AS total 
-                FROM
+                    ( sum( p.jumlah ) * p.harga ) AS total 
+                    FROM
                     penjualan_d AS p
                     LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
                     LEFT JOIN barang AS b ON b.id = p.id_barang
-                    LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori 
-                WHERE
+                    LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori
+                    LEFT JOIN unit AS u ON u.id_unit = b.id_unit 
+                    WHERE
                     b.id_kategori = 5
-                    AND h.id_unit = 1 
+                    AND h.id_unit = 1
                     AND h.active != 0 
-                    AND substr( p.created_at, 6, 2 ) = $bulan
-                GROUP BY b.id,b.kode,b.nama,p.harga");
-
+                    AND MONTH(h.tanggal) = $bulan
+                    AND YEAR(h.tanggal) = $year
+                    GROUP BY
+                    u.nama_unit,
+                    h.tanggal,
+                    b.kode,
+                    b.nama,
+                    p.harga"); 
+        
+        // Cek apakah data kosong
+        if (empty($data)) {
+            Session::flash('error', 'Data tidak tersedia untuk bulan dan tahun yang dipilih.');
+            Session::flash('mode', 'error');
+        } else {
+            Session::flash('success', 'Success.');
+            Session::flash('mode', 'success');
+        }
+        
         view()->share('bulan',$bulan);
         return view('backend.laporan-unit.rekap_tera', compact('data'));
-
     }
 
     public function index_ppdb()
@@ -314,31 +488,46 @@ class ManagerController extends Controller
         //
         Session::forget('success');
         Session::forget('mode');
-        if (isset($_GET['bulan']) && $_GET['bulan']!=""){
-            $bulan = $_GET['bulan'];
-        }else{
-            $bulan = 0;
-        } 
 
+        // Mengambil parameter bulan dan tahun
+        $bulan = $_GET['bulan'] ?? 0;
+        $year = $_GET['tahun'] ?? date('Y');
+        
         $data  = DB::select("SELECT
-                    b.id,
+                    h.tanggal,
                     b.kode,
                     b.nama,
-                    sum(p.jumlah) as jumlah,
+                    sum( p.jumlah ) AS jumlah,
                     p.harga,
-                    ( sum(p.jumlah) * p.harga ) AS total 
-                FROM
+                    ( sum( p.jumlah ) * p.harga ) AS total 
+                    FROM
                     penjualan_d AS p
                     LEFT JOIN penjualan_h AS h ON p.id_penjualan = h.id
                     LEFT JOIN barang AS b ON b.id = p.id_barang
-                    LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori 
-                WHERE
+                    LEFT JOIN kategori_barang AS k ON k.id_kategori = b.id_kategori
+                    LEFT JOIN unit AS u ON u.id_unit = b.id_unit 
+                    WHERE
                     b.id_kategori >= 6
-                    AND h.id_unit = 4 
+                    AND h.id_unit = 4
                     AND h.active != 0 
-                    AND substr( p.created_at, 6, 2 ) = $bulan
-                GROUP BY b.id,b.kode,b.nama,p.harga");
+                    AND MONTH(h.tanggal) = $bulan
+                    AND YEAR(h.tanggal) = $year
+                    GROUP BY
+                    u.nama_unit,
+                    h.tanggal,
+                    b.kode,
+                    b.nama,
+                    p.harga"); 
 
+        // Cek apakah data kosong
+        if (empty($data)) {
+            Session::flash('error', 'Data tidak tersedia untuk bulan dan tahun yang dipilih.');
+            Session::flash('mode', 'error');
+        } else {
+            Session::flash('success', 'Success.');
+            Session::flash('mode', 'success');
+        }
+        
         view()->share('bulan',$bulan);
         return view('backend.laporan-unit.rekap_ppdb', compact('data'));
 

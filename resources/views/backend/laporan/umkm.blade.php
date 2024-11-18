@@ -2,7 +2,7 @@
 	$breadcrumb = [];
 	$breadcrumb[0]['title'] = 'Dashboard';
 	$breadcrumb[0]['url'] = url('backend/dashboard');
-	$breadcrumb[1]['title'] = 'Laporan Penjualan UMKM';
+	$breadcrumb[1]['title'] = 'Laporan Penjualan Jajanan';
 	$breadcrumb[1]['url'] = url('backend/report-umkm');
 ?>
 
@@ -10,13 +10,13 @@
 @extends('backend.layouts.main')
 
 <!-- TITLE -->
-@section('title', 'Penjualan UMKM')
+@section('title', 'Penjualan Jajanan')
 
 <!-- CONTENT -->
 @section('content')
     <div class="page-title">
         <div class="title_left">
-            <h3>Laporan Penjualan UMKM</h3>
+            <h3>Laporan Penjualan Jajanan</h3>
         </div>
         <div class="title_right">
             <div class="col-md-4 col-sm-4 col-xs-8 form-group pull-right top_search">

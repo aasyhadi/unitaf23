@@ -2,7 +2,7 @@
 	$breadcrumb = [];
 	$breadcrumb[0]['title'] = 'Dashboard';
 	$breadcrumb[0]['url'] = url('backend/dashboard');
-	$breadcrumb[1]['title'] = 'Penjualan UMKM';
+	$breadcrumb[1]['title'] = 'Penjualan Jajanan';
 	$breadcrumb[1]['url'] = url('backend/penjualan-umkm');
 	$breadcrumb[2]['title'] = 'Add';
 	$breadcrumb[2]['url'] = url('backend/penjualan-umkm/create');
@@ -28,7 +28,7 @@
 			$mode = "Edit";
 		}
 	?>
-    Penjualan UMKM - <?=$mode;?>
+    Penjualan Jajanan - <?=$mode;?>
 @endsection
 
 <!-- CONTENT -->
@@ -69,7 +69,7 @@
     ?>
 	<div class="page-title">
 		<div class="title_left">
-			<h3>Penjualan UMKM - <?=$mode;?></h3>
+			<h3>Penjualan Jajanan - <?=$mode;?></h3>
 		</div>
 		<div class="title_right">
 			<div class="col-md-4 col-sm-4 col-xs-8 form-group pull-right top_search">

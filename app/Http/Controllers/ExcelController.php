@@ -124,7 +124,7 @@ class ExcelController extends Controller {
         if (isset($_GET['id_unit']) && $_GET['id_unit']!=""){
 			$id_unit = $_GET['id_unit'];
             $nm_unit = DB::table("unit")->where('id_unit','=',$_GET['id_unit'])->pluck('nama_unit')[0];
-            Session::flash('success', 'Data penjualan umkm unit '.$nm_unit);
+            Session::flash('success', 'Data penjualan jajanan unit '.$nm_unit);
             Session::flash('mode', 'success');
 		}else{
 			$id_unit = 0;

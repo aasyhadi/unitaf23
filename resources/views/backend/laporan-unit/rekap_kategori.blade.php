@@ -12,7 +12,7 @@
 		"3"=>'Kampus Simpang Kawat SMP SMA'); 
 	$unit_select = request('id_unit');
 
-    $kategori = array( 
+    /* $kategori = array( 
 		"0"=>"",
 		"1"=>'Minuman & Ice Cream', 
 		"2"=>'Alat Tulis Sekolah', 
@@ -22,6 +22,15 @@
         "6"=>"...",
         "7"=>"...",
         "8"=>'Kangen Water');    
+    $kategori_select = request('kategori'); */
+
+    $kategori = array(
+        "1" => 'Minuman & Ice Cream',
+        "2" => 'Alat Tulis Sekolah',
+        "3" => 'Seragam & Perlengkapan Sekolah',
+        "5" => 'Perlengkapan Tera',
+        "8" => 'Kangen Water'
+    );
     $kategori_select = request('kategori');
 
     $bulan = array( 
@@ -43,6 +52,12 @@
 		$bulan_ini  = (int)date('m');
 		$bulan_select = $bulan_ini;
 	}
+
+    $currentYear = date('Y');
+    $tahun_select = request('tahun') ?: $currentYear;
+
+    $years = range($currentYear - 1, $currentYear + 5);
+    $activeYear = $tahun_select;
 
 ?>
 
@@ -98,7 +113,7 @@
                                 <?php $n = 0;?>
 								@foreach($bulan as $b)
 									<option value="{{$n}}" @if($bulan_select==$n) selected="selected" @endif>
-										@if($n>0) Bulan @else Pilih Kategori... @endif {{$b}}
+										@if($n>0) @else Pilih Bulan... @endif {{$b}}
 									</option>
 									<?php $n++;?>
 								@endforeach
@@ -106,21 +121,26 @@
 							</select>
                         </div>
 
-                        <div class="col-xs-12 col-sm-2" style="margin-top:7px;">
-                            Kategori Barang
+                        <div class="col-xs-12 col-sm-2">
+                            <select class="form-control" name="tahun" id="tahun" required="required">
+                                @foreach($years as $year)
+                                    <option value="{{ $year }}" {{ $year == $activeYear ? 'selected' : '' }}>{{ $year }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+
+                        <div class="col-xs-12 col-sm-1" style="margin-top:7px;">
+                            Kategori 
+                        </div>
+                        <div class="col-xs-12 col-sm-3">
                             <select class="form-control" name="kategori" id="kategori" required="required">
-								@if(count($kategori))
-									<?php $n = 0;?>
-									@foreach($kategori as $k)
-									<option value="{{$n}}" @if($kategori_select==$n) selected="selected" @endif>
-										@if($n>0) Kategori @else Pilih Kategori... @endif {{$k}}
-									</option>
-									<?php $n++;?>
-									@endforeach
-								@endif
-							</select>
+                                <option value="">Pilih Kategori...</option>
+                                @foreach($kategori as $key => $value)
+                                    <option value="{{ $key }}" {{ $kategori_select == $key ? 'selected' : '' }}>
+                                        {{ $value }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-xs-12 col-sm-2">
                             <button type="submit" class="btn btn-primary btn-block">Submit</button>
@@ -138,43 +158,72 @@
 				<div class="x_content">
                     @include('backend.elements.notification')
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>Nama Unit</th>
-                                    <th>Kode Barcode</th>
-                                    <th>Nama Barang</th>
-                                    <th>Jumlah</th>
-                                    <th>Harga Jual</th>
-                                    <th>Total</th>
+                    <table class="table table-striped table-hover table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Nama Unit</th>
+                                <th>Tanggal</th>
+                                <th>Kode Barcode</th>
+                                <th>Nama Barang</th>
+                                <th>Jumlah (Pcs)</th>
+                                <th>Harga Jual</th>
+                                <th>Total Penjualan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                $grandTotal = 0;
+                                $subTotal = 0;
+                                $currentDate = null;
 
+                                foreach ($data as $item):
+                                    // Jika tanggal berubah atau belum diatur, tampilkan subtotal dan reset subtotal
+                                    if ($currentDate !== null && $currentDate != $item->tanggal):
+                            ?>
+                                    <tr>
+                                        <td colspan="6" align="right"><strong>Subtotal tanggal <?= $currentDate; ?> :</strong></td>
+                                        <td><strong>Rp. <?= number_format($subTotal, 0, ',', '.'); ?></strong></td>
+                                    </tr>
+                            <?php
+                                        // Reset subtotal setelah ditampilkan
+                                        $subTotal = 0;
+                                    endif;
+
+                                    // Tampilkan data barang
+                            ?>
+                                <tr>
+                                    <td><?= $item->nama_unit; ?></td>
+                                    <td><?= $item->tanggal; ?></td>
+                                    <td><?= $item->kode; ?></td>
+                                    <td><?= $item->nama; ?></td>
+                                    <td><?= $item->jumlah; ?></td>
+                                    <td><?= number_format($item->harga, 0, ',', '.'); ?></td>
+                                    <td><?= number_format($item->total, 0, ',', '.'); ?></td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                    $total = 0;
-                                    foreach ($data as $item):
-                                ?>
-                                    <tr>
-                                        <td><?=$item->nama_unit;?></td>
-                                        <td><?=$item->kode;?></td>
-                                        <td><?=$item->nama;?></td>
-                                        <td><?=$item->jumlah;?></td>
-                                        <td><?=number_format($item->harga,0,',','.');?></td>
-                                        <td><?=number_format($item->total,0,',','.');?></td>
-                                    </tr>
-                                <?php
-                                        $total += $item->total;
-                                    endforeach;
-                                ?>
-                                    <tr>
-                                        <td colspan=6 align=right>
-                                            <h4>Grand Total : Rp. <?=number_format($total,0,',','.');?></h4>
-                                        </td>
-                                    </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            <?php
+                                    // Tambahkan total per item ke subtotal dan grand total
+                                    $subTotal += $item->total;
+                                    $grandTotal += $item->total;
+                                    $currentDate = $item->tanggal;
+                                endforeach;
+
+                                // Tampilkan subtotal untuk tanggal terakhir
+                                if ($currentDate !== null):
+                            ?>
+                                <tr>
+                                    <td colspan="6" align="right"><strong>Subtotal tanggal <?= $currentDate; ?> :</strong></td>
+                                    <td><strong>Rp. <?= number_format($subTotal, 0, ',', '.'); ?></strong></td>
+                                </tr>
+                            <?php endif; ?>
+
+                            <!-- Grand Total Keseluruhan -->
+                            <tr>
+                                <td colspan="6" align="right"><h4>Grand Total :</h4></td>
+                                <td><h4>Rp. <?= number_format($grandTotal, 0, ',', '.'); ?></h4></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 				</div>
 			</div>
 		</div>					

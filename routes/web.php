@@ -207,6 +207,9 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin']), functi
 	Route::get('/report-umkm','Backend\LaporanController@index_umkm');
     Route::get('/report-stok','Backend\LaporanController@index_stok');
 
+	Route::get('/report-penjualan-harian','Backend\LaporanHarianController@penjualan_harian');
+	Route::get('/report-penjualan-harian/{kategori}/{bulan}/{tahun}', 'Backend\LaporanHarianController@penjualan_harian_view');
+	
 	Route::get('/rekap-penerimaan','Backend\RekapController@index_penerimaan');
 	Route::get('/rekap-penerimaan/{unit}/{bulan}', 'Backend\RekapController@penerimaan_view');
 	Route::get('/rekap-pengeluaran','Backend\RekapController@index_pengeluaran');
@@ -217,6 +220,8 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin']), functi
 	Route::get('/report-purchase-unit','Backend\ManagerController@index_purchase');
     Route::get('/report-penjualan-unit','Backend\ManagerController@index_penjualan');
 	Route::get('/report-penjualan-kategori-unit','Backend\ManagerController@index_kategori');
+	Route::get('/report-statistik-penjualan-unit','Backend\ManagerController@statistik_unit');
+	Route::get('/report-statistik-penjualan-kategori','Backend\ManagerController@statistik_kategori');
 	Route::get('/report-umkm-unit','Backend\ManagerController@index_umkm');
 	Route::get('/report-tera-unit','Backend\ManagerController@index_tera');
 	Route::get('/report-ppdb-unit','Backend\ManagerController@index_ppdb');

@@ -129,7 +129,7 @@
 				<a href="<?=url('backend/penjualan-barcode');?>"><i class="fa fa-gift"></i> Penjualan Barcode</a>
 			</li>
 			<li class="{{ ($segment == 'penjualan-umkm' ? 'active' : '') }}">
-				<a href="<?=url('backend/penjualan-umkm');?>"><i class="fa fa-certificate"></i> Penjualan UMKM</a>
+				<a href="<?=url('backend/penjualan-umkm');?>"><i class="fa fa-certificate"></i> Penjualan Jajanan</a>
             </li>
         <ul>
     </div>
@@ -163,7 +163,7 @@
 						<a href="<?=url('backend/report-penjualan');?>">Penjualan Barang</a>
                     </li>
 					<li class="{{ ($segment == 'report-umkm' ? 'active' : '') }}">
-						<a href="<?=url('backend/report-umkm');?>">Penjualan UMKM</a>
+						<a href="<?=url('backend/report-umkm');?>">Penjualan Jajanan</a>
                     </li>
 					<?php
 						// ADMIN Mesjid Agung //
@@ -235,9 +235,21 @@
 	<div class="menu_section">
         <h3>Monitoring</h3>
 		<ul class="nav side-menu">
-			<li class=" {{ ((($segment == 'report-purchase-unit') || ($segment == 'report-penjualan-unit') || ($segment == 'report-umkm-unit') || ($segment == 'report-penjualan-kategori-unit') || ($segment == 'report-stok-unit')) ? 'active' : '') }}">
+			<li class=" {{ ((($segment == 'report-purchase-unit') || 
+							($segment == 'report-penjualan-unit') || 
+							($segment == 'report-umkm-unit') || 
+							($segment == 'report-penjualan-kategori-unit') || 
+							($segment == 'report-statistik-penjualan-unit') || 
+							($segment == 'report-statistik-penjualan-kategori') || 
+							($segment == 'report-stok-unit')) ? 'active' : '') }}">
 				<a><i class="fa fa-bar-chart-o"></i> Laporan<span class="fa fa-chevron-down"></span></a>
-				<ul class="nav child_menu" style="{{ ((($segment == 'report-purchase-unit') || ($segment == 'report-penjualan-unit') || ($segment == 'report-umkm-unit') || ($segment == 'report-penjualan-kategori-unit') || ($segment == 'report-stok-unit')) ? 'display : block' : '') }}">
+				<ul class="nav child_menu" style="{{ ((($segment == 'report-purchase-unit') || 
+														($segment == 'report-penjualan-unit') || 
+														($segment == 'report-umkm-unit') || 
+														($segment == 'report-penjualan-kategori-unit') || 
+														($segment == 'report-statistik-penjualan-unit') || 
+														($segment == 'report-statistik-penjualan-kategori') || 
+														($segment == 'report-stok-unit')) ? 'display : block' : '') }}">
 					<li class="{{ ($segment == 'report-purchase-unit' ? 'active' : '') }}">
 						<a href="<?=url('backend/report-purchase-unit');?>">Pembelian / PO</a>
 					</li>
@@ -245,7 +257,7 @@
 						<a href="<?=url('backend/report-penjualan-unit');?>">Penjualan Barang</a>
                     </li>
 					<li class="{{ ($segment == 'report-umkm-unit' ? 'active' : '') }}">
-						<a href="<?=url('backend/report-umkm-unit');?>">Penjualan UMKM</a>
+						<a href="<?=url('backend/report-umkm-unit');?>">Penjualan Jajanan</a>
                     </li>
 					<li class="{{ ($segment == 'report-tera-unit' ? 'active' : '') }}">
 						<a href="<?=url('backend/report-tera-unit');?>">Penjualan TERA</a>
@@ -255,6 +267,12 @@
                     </li>
 					<li class="{{ ($segment == 'report-penjualan-kategori-unit' ? 'active' : '') }}">
 						<a href="<?=url('backend/report-penjualan-kategori-unit');?>">Penjualan Kategori</a>
+                    </li>
+					<li class="{{ ($segment == 'report-statistik-penjualan-unit' ? 'active' : '') }}">
+						<a href="<?=url('backend/report-statistik-penjualan-unit');?>">Statistik Penjualan Unit</a>
+                    </li>
+					<li class="{{ ($segment == 'report-statistik-penjualan-kategori' ? 'active' : '') }}">
+						<a href="<?=url('backend/report-statistik-penjualan-kategori');?>">Statistik Penjualan Kategori</a>
                     </li>
 					<li class="{{ ($segment == 'report-stok-unit' ? 'active' : '') }}">
 						<a href="<?=url('backend/report-stok-unit');?>">Stok Barang</a>

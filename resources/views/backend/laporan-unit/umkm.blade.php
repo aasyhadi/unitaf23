@@ -2,14 +2,14 @@
 	$breadcrumb = [];
 	$breadcrumb[0]['title'] = 'Dashboard';
 	$breadcrumb[0]['url'] = url('backend/dashboard');
-	$breadcrumb[1]['title'] = 'Laporan Penjualan UMKM';
+	$breadcrumb[1]['title'] = 'Laporan Penjualan Jajanan';
 	$breadcrumb[1]['url'] = url('backend/report-umkm');
 
     $id_unit = array( 
-		"0"=>"",
-		"1"=>'Kampus Mesjid Agung', 
+		"0"=>""
+		/* "1"=>'Kampus Mesjid Agung', 
 		"2"=>'Kampus Simpang Kawat SD', 
-		"3"=>'Kampus Simpang Kawat SMP SMA'); 
+		"3"=>'Kampus Simpang Kawat SMP SMA'*/);  
 	$unit_select = request('id_unit');
 
 ?>
@@ -18,13 +18,13 @@
 @extends('backend.layouts.main')
 
 <!-- TITLE -->
-@section('title', 'Penjualan UMKM')
+@section('title', 'Penjualan Jajanan')
 
 <!-- CONTENT -->
 @section('content')
     <div class="page-title">
         <div class="title_left">
-            <h3>Laporan Penjualan UMKM</h3>
+            <h3>Laporan Penjualan Jajanan</h3>
         </div>
         <div class="title_right">
             <div class="col-md-4 col-sm-4 col-xs-8 form-group pull-right top_search">
@@ -110,35 +110,61 @@
                                     <th>No Nota</th>
                                     <th>Tanggal</th>
                                     <th>Nama Unit</th>
-                                    <th>Pembayaran</th>
-                                    <th>Bagi Hasil</th>
+                                    <th style="text-align: right;">Pembayaran</th>
+                                    <th style="text-align: right;">Bagi Hasil</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                    $total = 0;
-                                    $bagi_hasil = 0;
+                                    $grandTotalBagiHasil = 0; // Total semua bagi hasil
+                                    $subTotalBagiHasil = 0; // Total bagi hasil per tanggal
+                                    $currentDate = null; // Menyimpan tanggal yang sedang diproses
+
                                     foreach ($data as $item):
+                                        // Jika tanggal berubah atau belum diatur, tampilkan subtotal bagi hasil
+                                        if ($currentDate !== null && $currentDate != $item->tanggal):
                                 ?>
-                                    <tr>
-                                        <td><?=$item->id;?></td>
-                                        <td><b><a href="<?=url('backend/penjualan-umkm/'.$item->id);?>" target=_blank><?=$item->no_inv;?></a></b></td>
-                                        <td><?=date('d M Y', strtotime($item->tanggal));?></td>
-                                        <td><?=$item->nama_unit;?></td>
-                                        <td><?=number_format($item->total,0,',','.');?></td>
-                                        <td><?=number_format($item->bagi_hasil,0,',','.');?></td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="5" align="right"><strong>Subtotal Bagi Hasil Tanggal <?= date('d M Y', strtotime($currentDate)); ?>:</strong></td>
+                                            <td align="right"><strong>Rp. <?= number_format($subTotalBagiHasil, 0, ',', '.'); ?></strong></td>
+                                        </tr>
                                 <?php
-                                        $total += $item->total;
-                                        $bagi_hasil += $item->bagi_hasil;
+                                            // Reset subtotal setelah ditampilkan
+                                            $subTotalBagiHasil = 0;
+                                        endif;
+
+                                        // Menampilkan data baris
+                                ?>
+                                        <tr>
+                                            <td><?= $item->id; ?></td>
+                                            <td><b><a href="<?= url('backend/penjualan-umkm/'.$item->id); ?>" target="_blank"><?= $item->no_inv; ?></a></b></td>
+                                            <td><?= date('d M Y', strtotime($item->tanggal)); ?></td>
+                                            <td><?= $item->nama_unit; ?></td>
+                                            <td align="right"><?= number_format($item->total, 0, ',', '.'); ?></td>
+                                            <td align="right"><?= number_format($item->bagi_hasil, 0, ',', '.'); ?></td>
+                                        </tr>
+                                <?php
+                                        // Menambahkan total per item ke subtotal dan grand total
+                                        $subTotalBagiHasil += $item->bagi_hasil;
+                                        $grandTotalBagiHasil += $item->bagi_hasil;
+                                        $currentDate = $item->tanggal;
                                     endforeach;
+
+                                    // Tampilkan subtotal untuk tanggal terakhir
+                                    if ($currentDate !== null):
                                 ?>
                                     <tr>
-                                        <td colspan=6 align=right>
-                                            <h4>Grand Total Bagi Hasil : Rp. <?=number_format($bagi_hasil,0,',','.');?></h4>
-                                        </td>
+                                        <td colspan="5" align="right"><strong>Subtotal Bagi Hasil Tanggal <?= date('d M Y', strtotime($currentDate)); ?>:</strong></td>
+                                        <td align="right"><strong>Rp. <?= number_format($subTotalBagiHasil, 0, ',', '.'); ?></strong></td>
                                     </tr>
-                            </tbody>
+                                <?php endif; ?>
+
+                                <!-- Grand Total -->
+                                <tr>
+                                    <td colspan="5" align="right"><h4>Grand Total Bagi Hasil:</h4></td>
+                                    <td align="right"><h4>Rp. <?= number_format($grandTotalBagiHasil, 0, ',', '.'); ?></h4></td>
+                                </tr>
+                                </tbody>
                         </table>
                     </div>
 				</div>

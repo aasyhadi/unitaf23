@@ -2,7 +2,7 @@
 	$breadcrumb = [];
 	$breadcrumb[0]['title'] = 'Dashboard';
 	$breadcrumb[0]['url'] = url('backend/dashboard');
-	$breadcrumb[1]['title'] = 'Penjualan UMKM';
+	$breadcrumb[1]['title'] = 'Penjualan Jajanan';
     $breadcrumb[1]['url'] = url('backend/penjualan-umkm');
 	if (isset($data)){
 		$breadcrumb[2]['title'] = $data[0]->no_inv;
@@ -17,13 +17,13 @@
 @extends('backend.layouts.main')
 
 <!-- TITLE -->
-@section('title', 'Penjualan UMKM')
+@section('title', 'Penjualan Jajanan')
 
 <!-- CONTENT -->
 @section('content')
     <div class="page-title">
         <div class="title_left">
-            <h3>Penjualan UMKM</h3>
+            <h3>Penjualan Jajanan</h3>
         </div>
         <div class="title_right">
             <div class="col-md-4 col-sm-4 col-xs-8 form-group pull-right top_search">
@@ -39,7 +39,7 @@
 				<div class="x_content">
 					<div class="row">
                         <div class="col-xs-12">
-                            <h4>Penjualan UMKM</h4>
+                            <h4>Penjualan Jajanan</h4>
                             No INV : <b><?=$data[0]->no_inv;?></b><br/>
                             Tanggal : <b><?=date('d F Y', strtotime($data[0]->tanggal))?></b><br/>
                             Pembayaran : <b>Rp. <?=number_format($data[0]->total, 0, ',','.');?></b><br/>
