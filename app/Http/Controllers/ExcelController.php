@@ -16,6 +16,7 @@ use Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Database\Query\Builder;
+use Carbon\Carbon;
 
 class ExcelController extends Controller {
 
@@ -80,13 +81,14 @@ class ExcelController extends Controller {
 		$startDateQuery = date("Y-m-d", strtotime($startDate));
         $endDateQuery = date("Y-m-d", strtotime($endDate));
         if ($mode == "all"){
-            $data = PenjualanH::where('penjualan_h.active', '!=', 0)->where('penjualan_h.id_unit','=',$id_unit)->orderBy('penjualan_h.tanggal', 'ASC');
+            $data = PenjualanH::where('penjualan_h.active', '!=', 0)
+                ->where('penjualan_h.id_unit','=',Session::get('userinfo')['id_unit'])
+                ->orderBy('penjualan_h.id', 'desc');
         } else 
         if ($mode == "limited"){
-            $data = PenjualanH::where('penjualan_h.active', '!=', 0)->where('penjualan_h.id_unit','=',$id_unit)->whereBetween('tanggal', [$startDateQuery, $endDateQuery])->orderBy('penjualan_h.tanggal', 'ASC');
+            $data = PenjualanH::where('penjualan_h.active', '!=', 0)->where('penjualan_h.id_unit','=',Session::get('userinfo')['id_unit'])->whereBetween('tanggal', [$startDateQuery, $endDateQuery]);
         }
-        
-        $data = $data->get()->toArray();
+        $data = $data->get();
 
 	 	return Excel::create('export_penjualan', function($excel) use ($data) {
 			$excel->sheet('List Penjualan', function($sheet) use ($data)

@@ -30,46 +30,53 @@ class RekapController extends Controller
         return view('backend.rekapan.penerimaan_index', compact('list_unit'));
     }
 
-    public function penerimaan_view($id_unit, $bulan){
+    public function penerimaan_view($id_unit, $bulan, $tahun){
         
+        $tahun_select = $tahun;
         $bulan_select = $bulan;
         $unit = $id_unit;
 
         $data_minuman  = DB::select("SELECT sum(penerimaan) as total FROM rekapan WHERE 
                 id_kategori = 1 AND 
                 id_unit = $id_unit AND
-                bulan = $bulan");
+                bulan = $bulan AND
+                tahun = $tahun");
         $data_alat_tulis  = DB::select("SELECT sum(penerimaan) as total FROM rekapan WHERE 
                 id_kategori = 2 AND 
                 id_unit = $id_unit AND
-                bulan = $bulan");
+                bulan = $bulan AND
+                tahun = $tahun");
         $data_seragam  = DB::select("SELECT sum(penerimaan) as total FROM rekapan WHERE 
                 id_kategori = 3 AND 
                 id_unit = $id_unit AND
-                bulan = $bulan");
+                bulan = $bulan AND
+                tahun = $tahun");
         $data_tera  = DB::select("SELECT sum(penerimaan) as total FROM rekapan WHERE 
                 id_kategori = 5 AND 
                 id_unit = $id_unit AND
-                bulan = $bulan");
+                bulan = $bulan AND
+                tahun = $tahun");
         $data_kangen  = DB::select("SELECT sum(penjualan) as total FROM rekapan WHERE 
                 id_kategori = 8 AND 
                 id_unit = $id_unit AND
-                bulan = $bulan");
+                bulan = $bulan AND
+                tahun = $tahun");
         $data_umkm = DB::select("SELECT sum(bagi_hasil) as total FROM keep_h WHERE 
                 id_unit = $id_unit AND
-                substr(created_at, 6, 2 ) = $bulan");
+                substr(created_at, 6, 2 ) = $bulan AND
+                left(created_at, 4) = $tahun");
 
-        $sql_minuman = "SELECT sum(penerimaan) as total FROM rekapan WHERE id_kategori = 1 AND id_unit = $id_unit AND bulan = $bulan";
+        $sql_minuman = "SELECT sum(penerimaan) as total FROM rekapan WHERE id_kategori = 1 AND id_unit = $id_unit AND bulan = $bulan AND tahun = $tahun";
         $tot_minuman = DB::table(DB::raw("($sql_minuman) as x"))->select(['total'])->pluck('total')[0];
-        $sql_peralatan= "SELECT sum(penerimaan) as total FROM rekapan WHERE id_kategori = 2 AND id_unit = $id_unit AND bulan = $bulan";
+        $sql_peralatan= "SELECT sum(penerimaan) as total FROM rekapan WHERE id_kategori = 2 AND id_unit = $id_unit AND bulan = $bulan AND tahun = $tahun";
         $tot_peralatan = DB::table(DB::raw("($sql_peralatan) as x"))->select(['total'])->pluck('total')[0];
-        $sql_seragam = "SELECT sum(penerimaan) as total FROM rekapan WHERE id_kategori = 3 AND id_unit = $id_unit AND bulan = $bulan";
+        $sql_seragam = "SELECT sum(penerimaan) as total FROM rekapan WHERE id_kategori = 3 AND id_unit = $id_unit AND bulan = $bulan AND tahun = $tahun";
         $tot_seragam = DB::table(DB::raw("($sql_seragam) as x"))->select(['total'])->pluck('total')[0];
-        $sql_tera = "SELECT sum(penerimaan) as total FROM rekapan WHERE id_kategori = 5 AND id_unit = $id_unit AND bulan = $bulan";
+        $sql_tera = "SELECT sum(penerimaan) as total FROM rekapan WHERE id_kategori = 5 AND id_unit = $id_unit AND bulan = $bulan AND tahun = $tahun";
         $tot_tera = DB::table(DB::raw("($sql_tera) as x"))->select(['total'])->pluck('total')[0];
-        $sql_kangen = "SELECT sum(penjualan) as total FROM rekapan WHERE id_kategori = 8 AND id_unit = $id_unit AND bulan = $bulan";
+        $sql_kangen = "SELECT sum(penjualan) as total FROM rekapan WHERE id_kategori = 8 AND id_unit = $id_unit AND bulan = $bulan AND tahun = $tahun";
         $tot_kangen = DB::table(DB::raw("($sql_kangen) as x"))->select(['total'])->pluck('total')[0];
-        $sql_umkm= "SELECT sum(bagi_hasil) as total FROM keep_h WHERE id_unit = $id_unit AND substr(created_at, 6, 2 ) = $bulan";
+        $sql_umkm= "SELECT sum(bagi_hasil) as total FROM keep_h WHERE id_unit = $id_unit AND substr(created_at, 6, 2 ) = $bulan AND left(created_at, 4) = $tahun";
         $tot_umkm = DB::table(DB::raw("($sql_umkm) as x"))->select(['total'])->pluck('total')[0]; 
        
         
@@ -78,7 +85,7 @@ class RekapController extends Controller
             $grand_total = $tot_minuman  + $tot_seragam + $tot_peralatan + $tot_umkm + $tot_tera + $tot_kangen;
         } 
         
-        Session::flash('success','Rekap Penerimaan Bulan '.$bulan_select);
+        Session::flash('success','Rekap Penerimaan Bulan '.$bulan_select .' Tahun ' .$tahun_select);
         Session::flash('mode','success');
         return view('backend.rekapan.penerimaan_view', compact(['data_minuman','data_alat_tulis','data_seragam',
         'data_tera','data_kangen','data_umkm','grand_total']));

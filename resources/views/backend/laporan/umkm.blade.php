@@ -84,8 +84,8 @@
                                     <th>ID</th>
                                     <th>No Nota</th>
                                     <th>Tanggal</th>
-                                    <th>Pembayaran</th>
-                                    <th>Bagi Hasil</th>
+                                    <th style="text-align: right;">Pembayaran</th>
+                                    <th style="text-align: right;">Bagi Hasil</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,8 +98,8 @@
                                         <td><?=$item->id;?></td>
                                         <td><b><a href="<?=url('backend/penjualan-umkm/'.$item->id);?>" target=_blank><?=$item->no_inv;?></a></b></td>
                                         <td><?=date('d M Y', strtotime($item->tanggal));?></td>
-                                        <td><?=number_format($item->total,0,',','.');?></td>
-                                        <td><?=number_format($item->bagi_hasil,0,',','.');?></td>
+                                        <td align="right"><?=number_format($item->total,0,',','.');?></td>
+                                        <td align="right"><?=number_format($item->bagi_hasil,0,',','.');?></td>
                                     </tr>
                                 <?php
                                         $total += $item->total;
@@ -124,7 +124,7 @@
             <div class="x_panel" style="background-color: #eab676;">
                 <div class="x_content">
                     <h2>Laporan Export Excel</h2>
-                    <form id="form-work" class="form-horizontal" action="{{ url('/backend/user/export/xls') }}" role="form" autocomplete="off" method="GET" >
+                    <form id="form-work" class="form-horizontal" action="{{ url('/backend/umkm/export/xls') }}" role="form" autocomplete="off" method="GET" >
                         {!! csrf_field() !!}
 
                         <div class="row">

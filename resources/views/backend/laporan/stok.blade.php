@@ -37,8 +37,8 @@
                                     <th>ID</th>
                                     <th>Kode / Barcode</th>
                                     <th>Nama Barang</th>
-                                    <th>Stok Awal</th>
-                                    <th>Stok Total</th>
+                                    <th style="text-align: right;">Stok Awal</th>
+                                    <th style="text-align: right;">Stok Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -49,8 +49,8 @@
                                         <td><?=$item->id;?></td>
                                         <td><?=$item->kode;?></td>
                                         <td><?=$item->nama;?></td>
-                                        <td><?=number_format($item->stok_awal,0,',','.');?></td>
-                                        <td><?=number_format($item->stok_total,0,',','.');?></td>
+                                        <td align="right"><?=number_format($item->stok_awal,0,',','.');?></td>
+                                        <td align="right"><?=number_format($item->stok_total,0,',','.');?></td>
                                     </tr>
                                 <?php
                                     endforeach;

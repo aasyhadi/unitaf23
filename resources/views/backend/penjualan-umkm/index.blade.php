@@ -117,13 +117,13 @@
                     <table class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable" cellspacing="0" width="100%">
 						<thead>
 							<tr>
-                                <th>ID</th>
-                                <th>No Nota</th>
-                                <th>Tanggal</th>
-                                <th>Pembayaran</th>
-                                <th>Bagi Hasil</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th style="text-align: center;">ID</th>
+                                <th style="text-align: center;">No Nota</th>
+                                <th style="text-align: center;">Tanggal</th>
+                                <th style="text-align: center;">Pembayaran</th>
+                                <th style="text-align: center;">Bagi Hasil</th>
+                                <th style="text-align: center;">Status</th>
+                                <th style="text-align: center;">Actions</th>
                             </tr>
 						</thead>
 					</table>
@@ -147,12 +147,12 @@
 			serverSide: true,
 			ajax: "<?=url('backend/penjualan-umkm/datatable?status='.$status.'&startDate='.$startDate.'&endDate='.$endDate.'&mode='.$mode);?>",
 			columns: [
-				{data: 'id', name: 'id'},
-                {data: 'no_inv', name: 'no_inv'},
-				{data: 'tanggal', name: 'tanggal'},
-                {data: 'total', name: 'total'},
-                {data: 'bagi_hasil', name: 'bagi_hasil'},
-				{data:  'status', render: function ( data, type, row ) {
+				{data: 'id', name: 'id', className: 'text-center'},
+                {data: 'no_inv', name: 'no_inv', className: 'text-center'},
+				{data: 'tanggal', name: 'tanggal', className: 'text-center'},
+                {data: 'total', name: 'total', className: 'text-center'},
+                {data: 'bagi_hasil', name: 'bagi_hasil', className: 'text-center'},
+				{data:  'status', className: 'text-center', render: function ( data, type, row ) {
 					var text = "";
 					var label = "";
 					if (data == "keep"){
@@ -165,7 +165,7 @@
 					}
 					return "<span class='badge badge-" + label + "'>"+ text + "</span>";
                 }},				
-				{data: 'action', name: 'action', orderable: false, searchable: false}
+				{data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
 			],
             order: [[0, 'desc']],
 			responsive: true

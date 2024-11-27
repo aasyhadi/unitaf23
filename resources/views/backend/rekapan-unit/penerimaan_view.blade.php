@@ -34,6 +34,12 @@
 		$bulan_select = $bulan_ini;
 	}
 
+    $currentYear = date('Y');
+    $tahun_select = request('tahun') ?: $currentYear;
+
+    $years = range($currentYear - 1, $currentYear + 5);
+    $activeYear = $tahun_select;
+
 ?>
 
 <!-- LAYOUT -->
@@ -62,9 +68,9 @@
                 <div class="x_content">
                     <div class="row">
                         <div class="col-xs-12 col-sm-1" style="margin-top:7px;">
-                            Periode 
+                            Bulan 
                         </div>
-                        <div class="col-xs-12 col-sm-11">
+                        <div class="col-xs-12 col-sm-7">
                             <select class="form-control" name="bulan" id="bulan" required="required">
 							@if(count($bulan))
                                 <?php $n = 0;?>
@@ -76,7 +82,18 @@
 								@endforeach
 							@endif
 							</select>
-                        </div><br><br><br>
+                        </div><br><br>
+
+                        <div class="col-xs-12 col-sm-1" style="margin-top:7px;">
+                            Tahun
+                        </div>
+                        <div class="col-xs-12 col-sm-7">
+                            <select class="form-control" name="tahun" id="tahun" required="required">
+                                @foreach($years as $year)
+                                    <option value="{{ $year }}" {{ $year == $activeYear ? 'selected' : '' }}>{{ $year }}</option>
+                                @endforeach
+                            </select>
+                        </div><br><br>
 
 						<div class="col-xs-12 col-sm-1" style="margin-top:7px;">
                                 Unit Usaha
@@ -181,7 +198,7 @@
                                 </tr>
 								<tr>
                                 	<td>4.</td>
-                                    <td>Bagi Hasil Titipan UMKM</td>
+                                    <td>Bagi Hasil Titipan Jajanan</td>
                                     @foreach ($data_umkm as $du)
                                     <td id="empat" value="{{$du->total}}" style="text-align:right"><?=number_format($du->total,0,',','.');?></td>
                                     @endforeach
@@ -226,19 +243,31 @@
             
             $("#unit").on('change', function(){
                 $val_bulan = $('#bulan').val();
-                $val_unit = $('#unit').val()
-                if($val_bulan !='' && $val_unit !=''){
+                $val_tahun = $('#tahun').val();
+                $val_unit = $('#unit').val();
+                if($val_bulan !='' && $val_tahun !='' && $val_unit !=''){
                     /* $tabel1.ajax.url("{{url('laporan-jadwal-kunjungan-tim/dt')}}/"+$bulan+'/'+$kecamatan).load(); */
-                    window.location = '{{url("backend/rekap-penerimaan-unit")}}/'+$val_unit+'/'+$val_bulan;
+                    window.location = '{{url("backend/rekap-penerimaan-unit")}}/'+$val_unit+'/'+$val_bulan+'/'+$val_tahun;
                 }
             })
 
             $("#bulan").on('change', function(){
                 $val_bulan = $('#bulan').val();
+                $val_tahun = $('#tahun').val();
                 $val_unit = $('#unit').val()
-                if($val_bulan !='' && $val_unit !=''){
+                if($val_bulan !='' && $val_tahun !='' && $val_unit !=''){
                     /* $tabel1.ajax.url("{{url('laporan-jadwal-kunjungan-tim/dt')}}/"+$bulan+'/'+$kecamatan).load(); */
-                    window.location = '{{url("backend/rekap-penerimaan-unit")}}/'+$val_unit+'/'+$val_bulan;
+                    window.location = '{{url("backend/rekap-penerimaan-unit")}}/'+$val_unit+'/'+$val_bulan+'/'+$val_tahun;
+                }
+            })
+
+            $("#tahun").on('change', function(){
+                $val_bulan = $('#bulan').val();
+                $val_tahun = $('#tahun').val();
+                $val_unit = $('#unit').val()
+                if($val_bulan !='' && $val_tahun !='' && $val_unit !=''){
+                    /* $tabel1.ajax.url("{{url('laporan-jadwal-kunjungan-tim/dt')}}/"+$bulan+'/'+$kecamatan).load(); */
+                    window.location = '{{url("backend/rekap-penerimaan-unit")}}/'+$val_unit+'/'+$val_bulan+'/'+$val_tahun;
                 }
             })
 

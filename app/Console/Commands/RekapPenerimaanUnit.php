@@ -45,7 +45,7 @@ class RekapPenerimaanUnit extends Command
         $this->info('You call create:rekappenerimaanunit command');
         //RekapanUnit::where('id_unit', '=', $unit)->delete();
         DB::table("rekapan")->where("id_unit", "=", $unit)->delete();
-        DB::statement("INSERT INTO rekapan ( id, kode, nama, id_kategori, jumlah, penjualan, modal, penerimaan, bulan, id_unit) SELECT
+        DB::statement("INSERT INTO rekapan ( id, kode, nama, id_kategori, jumlah, penjualan, modal, penerimaan, bulan, tahun, id_unit) SELECT
                             b.id,
                             b.kode,
                             b.nama,
@@ -55,6 +55,7 @@ class RekapPenerimaanUnit extends Command
                             sum( p.jumlah ) * b.harga_beli AS modal,
                             ( sum( p.jumlah ) * p.harga ) - ( sum( p.jumlah ) * b.harga_beli ) AS penerimaan,
                             substr( p.created_at, 6, 2 ) AS bulan,
+                            left(p.created_at,4) AS tahun,
                             h.id_unit 
                         FROM
                             penjualan_d AS p

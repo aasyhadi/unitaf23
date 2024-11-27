@@ -84,29 +84,49 @@
                                     <th>ID</th>
                                     <th>No Nota</th>
                                     <th>Tanggal</th>
-                                    <th>Total</th>
+                                    <th style="text-align: right;">Total Penjualan</th> 
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                    $total = 0;
-                                    foreach ($data as $item):
-                                ?>
+                                    $grandTotal = 0;
+                                    $totalsByDate = [];
+
+                                    // Kelompokkan data berdasarkan tanggal
+                                    foreach ($data as $item) {
+                                        $tanggal = date('d M Y', strtotime($item->tanggal));
+                                        if (!isset($totalsByDate[$tanggal])) {
+                                            $totalsByDate[$tanggal] = 0;
+                                        }
+                                        $totalsByDate[$tanggal] += $item->total;
+                                        $grandTotal += $item->total;
+                                    }
+
+                                    // Iterasi data untuk menampilkan tabel
+                                    foreach ($totalsByDate as $tanggal => $totalByDate):
+                                        foreach ($data as $item):
+                                            if (date('d M Y', strtotime($item->tanggal)) === $tanggal):
+                                    ?>
+                                        <tr>
+                                            <td><?= $item->id; ?></td>
+                                            <td><b><a href="<?= url('backend/penjualan/' . $item->id); ?>" target="_blank"><?= $item->no_nota; ?></a></b></td>
+                                            <td><?= date('d M Y', strtotime($item->tanggal)); ?></td>
+                                            <td align="right"><?= number_format($item->total, 0, ',', '.'); ?></td>
+                                        </tr>
+                                    <?php 
+                                            endif;
+                                        endforeach; 
+                                    ?>
                                     <tr>
-                                        <td><?=$item->id;?></td>
-                                        <td><b><a href="<?=url('backend/penjualan/'.$item->id);?>" target=_blank><?=$item->no_nota;?></a></b></td>
-                                        <td><?=date('d M Y', strtotime($item->tanggal));?></td>
-                                        <td><?=number_format($item->total,0,',','.');?></td>
+                                        <td align="right" colspan="3"><strong>Tanggal: <?= $tanggal; ?></strong></td>
+                                        <td align="right"><strong>Total: Rp. <?= number_format($totalByDate, 0, ',', '.'); ?></strong></td>
                                     </tr>
-                                <?php
-                                        $total += $item->total;
-                                    endforeach;
-                                ?>
-                                    <tr>
-                                        <td colspan=4 align=right>
-                                            <h4>Grand Total : Rp. <?=number_format($total,0,',','.');?></h4>
-                                        </td>
-                                    </tr>
+                                <?php endforeach; ?>
+                                <tr>
+                                    <td colspan="4" align="right">
+                                        <h4>Grand Total: Rp. <?= number_format($grandTotal, 0, ',', '.'); ?></h4>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -121,7 +141,7 @@
             <div class="x_panel" style="background-color: #eab676;">
                 <div class="x_content">
                     <h2>Laporan Export Excel</h2>
-                    <form id="form-work" class="form-horizontal" action="{{ url('/backend/user/export/xls') }}" role="form" autocomplete="off" method="GET" >
+                    <form id="form-work" class="form-horizontal" action="{{ url('/backend/penjualan/export/xls') }}" role="form" autocomplete="off" method="GET" >
                         {!! csrf_field() !!}
 
                         <div class="row">

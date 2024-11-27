@@ -64,27 +64,53 @@
 							<tr>
                                 <th>ID / Nama UMKM</th>
                                 <th>Nama Barang</th>
-                                <th>Jumlah</th>
-                                <th>Sisa</th>
-                                <th>Harga Keep</th>
-                                <th>Harga Jual</th>
-                                <th>Pembayaran</th>
-                                <th>Bagi Hasil</th>
+                                <th style="text-align: right;">Jumlah</th>
+                                <th style="text-align: right;">Sisa</th>
+                                <th style="text-align: right;">Harga Keep</th>
+                                <th style="text-align: right;">Harga Jual</th>
+                                <th style="text-align: right;">Pembayaran</th>
+                                <th style="text-align: right;">Bagi Hasil</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                                foreach ($detail as $detail):
+                                $groupedData = []; // Menyimpan data per supplier
+                                foreach ($detail as $item) {
+                                    $supplierKey = $item->id_supplier . ' - ' . $item->supplier->nama;
+                                    if (!isset($groupedData[$supplierKey])) {
+                                        $groupedData[$supplierKey] = [
+                                            'details' => [],
+                                            'totalBagiHasil' => 0,
+                                        ];
+                                    }
+
+                                    // Hitung bagi hasil untuk item
+                                    $bagiHasilItem = ($item->harga_jual - $item->harga_keep) * ($item->jumlah - $item->sisa);
+                                    $groupedData[$supplierKey]['details'][] = $item;
+                                    $groupedData[$supplierKey]['totalBagiHasil'] += $bagiHasilItem;
+                                }
+
+                                // Render data yang sudah dikelompokkan
+                                foreach ($groupedData as $supplierKey => $data):
                             ?>
+                                <!-- Tampilkan Data Per Supplier -->
+                                <?php foreach ($data['details'] as $detail): ?>
+                                    <tr>
+                                        <td><?=$supplierKey;?></td>
+                                        <td><?=$detail->barang->nama;?></td>
+                                        <td align="right"><?=number_format($detail->jumlah, 0, ',', '.');?></td>
+                                        <td align="right"><?=number_format($detail->sisa, 0, ',', '.');?></td>
+                                        <td align="right"><?=number_format($detail->harga_keep, 0, ',', '.');?></td>
+                                        <td align="right"><?=number_format($detail->harga_jual, 0, ',', '.');?></td>
+                                        <td align="right"><?=number_format($detail->harga_keep * ($detail->jumlah - $detail->sisa), 0, ',', '.');?></td>
+                                        <td align="right"><?=number_format(($detail->harga_jual - $detail->harga_keep) * ($detail->jumlah - $detail->sisa), 0, ',', '.');?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+
+                                <!-- Tampilkan Total Bagi Hasil Per Supplier -->
                                 <tr>
-                                    <td><?=$detail->id_supplier . ' - ' . $detail->supplier->nama;?></td>
-                                    <td><?=$detail->barang->nama;?></td>
-                                    <td><?=number_format($detail->jumlah,0,',','.');?></td>
-                                    <td><?=number_format($detail->sisa,0,',','.');?></td>
-                                    <td><?=number_format($detail->harga_keep,0,',','.');?></td>
-                                    <td><?=number_format($detail->harga_jual,0,',','.');?></td>
-                                    <td><?=number_format($detail->harga_keep*($detail->jumlah - $detail->sisa),0,',','.');?></td>
-                                    <td><?=number_format(($detail->harga_jual-$detail->harga_keep)*($detail->jumlah - $detail->sisa),0,',','.');?></td>
+                                    <td colspan="7" align="right"><strong>Total Bagi Hasil untuk <?=$supplierKey;?>:</strong></td>
+                                    <td align="right"><strong>Rp. <?=number_format($data['totalBagiHasil'], 0, ',', '.');?></strong></td>
                                 </tr>
                             <?php
                                 endforeach;

@@ -52,24 +52,29 @@
 	<?php
 		// SUPER ADMIN & ADMIN //
 		endif;
-		if ($userinfo['user_level_id'] == 1 or $userinfo['user_level_id'] == 2 && $userinfo['id_unit'] <> 4):
+		if ($userinfo['user_level_id'] == 1 && $userinfo['id_unit'] <> 4):
 	?>
 	<div class="menu_section">
         <h3>Master</h3>
 		<ul class="nav side-menu">
-			<li class="{{ ($segment == 'supplier' ? 'active' : '') }}">
-				<a href="<?=url('backend/supplier');?>"><i class="fa fa-suitcase"></i> Master Supplier</a>
-            </li>
-			<li class="{{ ($segment == 'barang' ? 'active' : '') }}">
-				<a href="<?=url('backend/barang');?>"><i class="fa fa-file"></i> Master Barang</a>
+			<li class=" {{ (($segment == 'supplier' || $segment == 'barang' || $segment == 'media-library' || $segment == 'koreksi-stok') ? 'active' : '') }}">
+				<a><i class="fa fa-database"></i> Master <span class="fa fa-chevron-down"></span></a>
+				<ul class="nav child_menu" style="{{ (($segment == 'supplier' || $segment == 'barang' || $segment == 'media-library' || $segment == 'koreksi-stok') ? 'display : block' : '') }}">
+					<li class="{{ ($segment == 'supplier' ? 'active' : '') }}">
+						<a href="<?=url('backend/supplier');?>"><i class="fa fa-suitcase"></i> Master Supplier</a>
+					</li>
+					<li class="{{ ($segment == 'barang' ? 'active' : '') }}">
+						<a href="<?=url('backend/barang');?>"><i class="fa fa-file"></i> Master Barang</a>
+					</li>
+					<li class="{{ ($segment == 'media-library' ? 'active' : '') }}">
+						<a href="<?=url('backend/media-library');?>"><i class="fa fa-picture-o"></i> Media Library</a>
+					</li>
+					<li class="{{ ($segment == 'koreksi-stok' ? 'active' : '') }}">
+						<a href="<?=url('backend/koreksi-stok');?>"><i class="fa fa-cogs"></i> Koreksi Stok</a>
+					</li>
+				</ul>
 			</li>
-			<li class="{{ ($segment == 'media-library' ? 'active' : '') }}">
-				<a href="<?=url('backend/media-library');?>"><i class="fa fa-picture-o"></i> Media Library</a>
-            </li>
-			<li class="{{ ($segment == 'koreksi-stok' ? 'active' : '') }}">
-                <a href="<?=url('backend/koreksi-stok');?>"><i class="fa fa-cogs"></i> Koreksi Stok</a>
-            </li>
-        <ul>
+        </ul>
     </div>
 
 	<?php
@@ -137,25 +142,45 @@
 		endif;
 		if ($userinfo['user_level_id'] == 1 or $userinfo['user_level_id'] == 2 && $userinfo['id_unit'] <> 4):
 	?>
-	<div class="menu_section">
+	<!-- <div class="menu_section">
 		<h3>Transaksi</h3>
 		<ul class="nav side-menu">
 			<li class="{{ ($segment == 'pengeluaran' ? 'active' : '') }}">
 				<a href="<?=url('backend/pengeluaran');?>"><i class="fa fa-credit-card-alt"></i> Biaya Pengeluaran</a>
             </li>
         <ul>
-    </div>
+    </div> -->
 	<?php
 		// ADMIN & OPERATOR //
 		endif;
 		if ($userinfo['user_level_id'] == 2 &&  $userinfo['id_unit'] <> 4):
 	?>
 	<div class="menu_section">
-        <h3>Laporan</h3>
+        <h3>Menu</h3>
 		<ul class="nav side-menu">
-			<li class=" {{ ((($segment == 'report-purchase') || ($segment == 'report-penjualan') || ($segment == 'report-umkm') || ($segment == 'report-kategori') || ($segment == 'report-stok')) ? 'active' : '') }}">
+			<li class=" {{ (($segment == 'supplier' || $segment == 'barang' || $segment == 'media-library' || $segment == 'koreksi-stok') ? 'active' : '') }}">
+				<!-- Master -->
+				<a><i class="fa fa-database"></i> Master <span class="fa fa-chevron-down"></span></a>
+				<ul class="nav child_menu" style="{{ (($segment == 'supplier' || $segment == 'barang' || $segment == 'media-library' || $segment == 'koreksi-stok') ? 'display : block' : '') }}">
+					<li class="{{ ($segment == 'supplier' ? 'active' : '') }}">
+						<a href="<?=url('backend/supplier');?>"><i class="fa fa-suitcase"></i> Master Supplier</a>
+					</li>
+					<li class="{{ ($segment == 'barang' ? 'active' : '') }}">
+						<a href="<?=url('backend/barang');?>"><i class="fa fa-file"></i> Master Barang</a>
+					</li>
+					<li class="{{ ($segment == 'media-library' ? 'active' : '') }}">
+						<a href="<?=url('backend/media-library');?>"><i class="fa fa-picture-o"></i> Media Library</a>
+					</li>
+					<li class="{{ ($segment == 'koreksi-stok' ? 'active' : '') }}">
+						<a href="<?=url('backend/koreksi-stok');?>"><i class="fa fa-cogs"></i> Koreksi Stok</a>
+					</li>
+				</ul>
+			</li>
+            
+			<!-- Laporan -->
+			<li class=" {{ ((($segment == 'report-purchase') || ($segment == 'report-penjualan') || ($segment == 'report-umkm') || ($segment == 'report-kategori') || ($segment == 'report-stok') || ($segment == 'report-mutasi-stok') || ($segment == 'report-harian')) ? 'active' : '') }}">
 				<a><i class="fa fa-bar-chart-o"></i> Laporan <span class="fa fa-chevron-down"></span></a>
-				<ul class="nav child_menu" style="{{ ((($segment == 'report-purchase') || ($segment == 'report-penjualan') || ($segment == 'report-umkm') || ($segment == 'report-kategori') || ($segment == 'report-stok')) ? 'display : block' : '') }}">
+				<ul class="nav child_menu" style="{{ ((($segment == 'report-purchase') || ($segment == 'report-penjualan') || ($segment == 'report-umkm') || ($segment == 'report-kategori') || ($segment == 'report-stok') || ($segment == 'report-mutasi-stok') || ($segment == 'report-harian')) ? 'display : block' : '') }}">
 					<li class="{{ ($segment == 'report-purchase' ? 'active' : '') }}">
 						<a href="<?=url('backend/report-purchase');?>">Pembelian / PO</a>
 					</li>
@@ -181,9 +206,16 @@
 					<li class="{{ ($segment == 'report-stok' ? 'active' : '') }}">
 						<a href="<?=url('backend/report-stok');?>">Stok Barang</a>
 					</li>
+					<li class="{{ ($segment == 'report-mutasi-stok' ? 'active' : '') }}">
+						<a href="<?=url('backend/report-mutasi-stok');?>">Mutasi Stok</a>
+					</li>
+					<li class="{{ ($segment == 'report-harian' ? 'active' : '') }}">
+						<a href="<?=url('backend/report-harian');?>">Harian</a>
+					</li>
 				</ul>
 			</li>
-
+			
+			<!-- Rekapan -->
 			<li class=" {{ ((($segment == 'rekap-penerimaan') || ($segment == 'rekap-pengeluaran')) ? 'active' : '') }}">
 				<a><i class="fa fa-pie-chart"></i> Rekapan <span class="fa fa-chevron-down"></span></a>
 				<ul class="nav child_menu" style="{{ ((($segment == 'rekap-penerimaan') || ($segment == 'rekap-pengeluaran')) ? 'display : block' : '') }}">
@@ -195,7 +227,7 @@
 					</li>
 				</ul>
 			</li>
-        <ul>
+        </ul>
     </div>
 	
 	<?php

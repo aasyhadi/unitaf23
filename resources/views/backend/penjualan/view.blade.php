@@ -48,9 +48,9 @@
 						<thead>
 							<tr>
                                 <th>Nama Barang</th>
-                                <th>Jumlah</th>
-                                <th>Harga</th>
-                                <th>Subtotal</th>
+                                <th style="text-align: right;">Jumlah</th>
+                                <th style="text-align: right;">Harga</th>
+                                <th style="text-align: right;">Subtotal</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,9 +59,9 @@
                             ?>
                                 <tr>
                                     <td><?=$detail->barang->nama;?></td>
-                                    <td><?=number_format($detail->jumlah,0,',','.');?></td>
-                                    <td><?=number_format($detail->harga,0,',','.');?></td>
-                                    <td><?=number_format($detail->harga*$detail->jumlah,0,',','.');?></td>
+                                    <td align=right><?=number_format($detail->jumlah,0,',','.');?></td>
+                                    <td align=right><?=number_format($detail->harga,0,',','.');?></td>
+                                    <td align=right><?=number_format($detail->harga*$detail->jumlah,0,',','.');?></td>
                                 </tr>
                             <?php
                                 endforeach;

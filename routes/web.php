@@ -117,8 +117,8 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin']), functi
 	Route::get('/users-user/{id}','Backend\UserController@show');
 
     Route::get('/user/export/{type}','ExcelController@export_user');
-	Route::get('/user/export/{type}','ExcelController@export_penjualan');
-	Route::get('/user/export/{type}','ExcelController@export_umkm');
+	Route::get('/penjualan/export/{type}','ExcelController@export_penjualan');
+	Route::get('/umkm/export/{type}','ExcelController@export_umkm');
 	Route::get('/user/export/{type}','ExcelController@export_penjualan_unit');
 	Route::get('/user/export/{type}','ExcelController@export_umkm_unit');
 	Route::get('/user/export/{type}','ExcelController@export_penjualan_kategori');
@@ -206,12 +206,15 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin']), functi
 	Route::get('/report-rekap-penjualan/{kategori}/{bulan}/{tahun}', 'Backend\LaporanController@rekap_penjualan_view');
 	Route::get('/report-umkm','Backend\LaporanController@index_umkm');
     Route::get('/report-stok','Backend\LaporanController@index_stok');
+	Route::get('/report-mutasi-stok','Backend\LaporanController@mutasi_stok');
+	Route::get('/report-mutasi-stok/barang/popup-media/','Backend\LaporanController@popup_media_barang');
+	Route::get('/report-harian','Backend\LaporanController@index_harian');
 
 	Route::get('/report-penjualan-harian','Backend\LaporanHarianController@penjualan_harian');
 	Route::get('/report-penjualan-harian/{kategori}/{bulan}/{tahun}', 'Backend\LaporanHarianController@penjualan_harian_view');
 	
 	Route::get('/rekap-penerimaan','Backend\RekapController@index_penerimaan');
-	Route::get('/rekap-penerimaan/{unit}/{bulan}', 'Backend\RekapController@penerimaan_view');
+	Route::get('/rekap-penerimaan/{unit}/{bulan}/{tahun}', 'Backend\RekapController@penerimaan_view');
 	Route::get('/rekap-pengeluaran','Backend\RekapController@index_pengeluaran');
 	Route::get('/rekap-penjualan/{unit}/{bulan}', 'Backend\RekapController@pengeluaran_view');
 	Route::get('/rekapan/sinkron', 'Backend\RekapController@sinkron_data');
@@ -228,7 +231,7 @@ Route::group(array('prefix' => 'backend','middleware'=> ['token_admin']), functi
     Route::get('/report-stok-unit','Backend\ManagerController@index_stok');
 
 	Route::get('/rekap-penerimaan-unit','Backend\ManagerRekapController@index_penerimaan');
-	Route::get('/rekap-penerimaan-unit/{unit}/{bulan}', 'Backend\ManagerRekapController@penerimaan_view');
+	Route::get('/rekap-penerimaan-unit/{unit}/{bulan}/{tahun}', 'Backend\ManagerRekapController@penerimaan_view');
 	Route::get('/rekap-pengeluaran-unit','Backend\ManagerRekapController@index_pengeluaran');
 	Route::get('/rekap-penjualan-unit/{unit}/{bulan}', 'Backend\ManagerRekapController@pengeluaran_view');
 	Route::get('/rekapan/sinkron-unit', 'Backend\ManagerRekapController@sinkron_data_unit');

@@ -34,11 +34,11 @@
                     <table class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable" cellspacing="0" width="100%">
 						<thead>
 							<tr>
-                                <th>ID</th>
-                                <th>No Nota</th>
-                                <th>Tanggal</th>
-                                <th>Total</th>
-                                <th>Actions</th>
+                                <th style="text-align: center;">ID</th>
+                                <th style="text-align: center;">No Nota</th>
+                                <th style="text-align: center;">Tanggal</th>
+                                <th style="text-align: center;">Total</th>
+                                <th style="text-align: center;">Actions</th>
                             </tr>
 						</thead>
 					</table>
@@ -62,11 +62,11 @@
 			serverSide: true,
 			ajax: "<?=url('backend/penjualan-barcode/datatable');?>",
 			columns: [
-				{data: 'id', name: 'id'},
-                {data: 'no_nota', name: 'no_nota'},
-				{data: 'tanggal', name: 'tanggal'},
-                {data: 'total', name: 'total'},
-				{data: 'action', name: 'action', orderable: false, searchable: false}
+				{data: 'id', name: 'id', className: 'text-center'},
+                {data: 'no_nota', name: 'no_nota', className: 'text-center'},
+				{data: 'tanggal', name: 'tanggal', className: 'text-center'},
+                {data: 'total', name: 'total', className: 'text-center'},
+				{data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
 			],
 			order: [[0, 'desc']],
 			responsive: true

@@ -3,7 +3,7 @@
     $breadcrumb[0]['title'] = 'Dashboard';
     $breadcrumb[0]['url'] = url('backend/dashboard');
     $breadcrumb[1]['title'] = 'Rekap Penjualan';
-    $breadcrumb[1]['url'] = url('backend/rekap-penjualan');
+    $breadcrumb[1]['url'] = url('backend/rekap-penjualan'); 
 
     $kategori = array(
         "1" => 'Minuman & Ice Cream',
@@ -106,29 +106,41 @@
                         <table class="table table-striped table-hover table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
+                                    <th>Tanggal</th>
                                     <th>Kode Barcode</th>
                                     <th>Nama Barang</th>
-                                    <th>Jumlah</th>
-                                    <th>Harga Jual</th>
-                                    <th>Total</th>
+                                    <th style="text-align: right;">Jumlah</th>
+                                    <th style="text-align: right;">Harga Jual</th>
+                                    <th style="text-align: right;">Total Penjualan</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $total = 0; ?>
-                                @foreach ($data as $item)
+                                <?php 
+                                $groupedData = $data->groupBy('tanggal'); // Mengelompokkan data berdasarkan tanggal
+                                $grandTotal = 0; 
+                                ?>
+                                @foreach ($groupedData as $tanggal => $items)
+                                    <?php $subTotal = 0; ?>
+                                    @foreach ($items as $item)
+                                        <tr>
+                                            <td>{{ $item->tanggal }}</td>
+                                            <td>{{ $item->kode }}</td>
+                                            <td>{{ $item->nama }}</td>
+                                            <td align="right">{{ $item->jumlah }}</td>
+                                            <td align="right">{{ number_format($item->harga, 0, ',', '.') }}</td>
+                                            <td align="right">{{ number_format($item->total, 0, ',', '.') }}</td>
+                                        </tr>
+                                        <?php $subTotal += $item->total; ?>
+                                    @endforeach
                                     <tr>
-                                        <td>{{ $item->kode }}</td>
-                                        <td>{{ $item->nama }}</td>
-                                        <td>{{ $item->jumlah }}</td>
-                                        <td>{{ number_format($item->harga, 0, ',', '.') }}</td>
-                                        <td>{{ number_format($item->total, 0, ',', '.') }}</td>
+                                        <td colspan="5" align="right"><strong>Subtotal ({{ $tanggal }}):</strong></td>
+                                        <td align="right"><strong>{{ number_format($subTotal, 0, ',', '.') }}</strong></td>
                                     </tr>
-                                    <?php $total += $item->total; ?>
+                                    <?php $grandTotal += $subTotal; ?>
                                 @endforeach
                                 <tr>
-                                    <td colspan="5" align="right">
-                                        <h4>Grand Total : Rp. {{ number_format($total, 0, ',', '.') }}</h4>
-                                    </td>
+                                    <td colspan="5" align="right"><h4>Grand Total:</h4></td>
+                                    <td align="right"><h4>Rp. {{ number_format($grandTotal, 0, ',', '.') }}</h4></td>
                                 </tr>
                             </tbody>
                         </table>

@@ -34,7 +34,7 @@
                     <table class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable" cellspacing="0" width="100%">
 						<thead>
 							<tr>
-                                <th>ID</th>
+                                <th >ID</th>
                                 <th>No Nota</th>
                                 <th>Tanggal</th>
                                 <th>Total</th>
@@ -61,11 +61,11 @@
 			serverSide: true,
 			ajax: "<?=url('backend/penjualan/datatable');?>",
 			columns: [
-				{data: 'id', name: 'id'},
-                {data: 'no_nota', name: 'no_nota'},
-				{data: 'tanggal', name: 'tanggal'},
-                {data: 'total', name: 'total'},
-				{data: 'action', name: 'action', orderable: false, searchable: false}
+				{data: 'id', name: 'id', className: 'text-center'},
+                {data: 'no_nota', name: 'no_nota', className: 'text-center'},
+				{data: 'tanggal', name: 'tanggal', className: 'text-center'},
+                {data: 'total', name: 'total', className: 'text-center'},
+				{data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
 			],
 			order: [[0, 'desc']],
 			responsive: true

@@ -137,7 +137,7 @@ class LaporanController extends Controller
         $bulan_select = $bulan;
         $id_unit = Session::get('userinfo')['id_unit'];
         $data  = DB::select("SELECT
-                    b.id,
+                    h.tanggal,
                     b.kode,
                     b.nama,
                     sum(p.jumlah) as jumlah,
@@ -154,7 +154,8 @@ class LaporanController extends Controller
                     AND h.active != 0 
                     AND substr( p.created_at, 6, 2 ) = $bulan_select
                     AND left(p.created_at,4) = $year
-                GROUP BY b.id,b.kode,b.nama,p.harga");
+                GROUP BY h.tanggal,b.kode,b.nama,p.harga"); 
+                $data = collect($data);
 
         return view('backend.laporan.rekap_view', compact('data'));
     }
@@ -207,5 +208,85 @@ class LaporanController extends Controller
         return view ('backend.laporan.stok',['data'=>$data]);
     }
 
-    
+    public function mutasi_stok(Request $request)
+    {
+        $id_barang = $request->get('id_bahan_baku');
+        $data = collect(); // Default kosong jika id_barang tidak ada
+
+        if ($id_barang) {
+            $data = DB::table('stok AS s')
+                ->selectRaw("
+                    b.nama,
+                    b.stok_awal,
+                    b.stok_total,
+                    s.created_at AS tanggal,
+                    s.keterangan,
+                    s.type,
+                    s.jumlah,
+                    SUM(s.jumlah) OVER (PARTITION BY s.id_barang ORDER BY s.created_at ASC) + b.stok_awal AS mutasi_stok
+                ")
+                ->leftJoin('barang AS b', 's.id_barang', '=', 'b.id')
+                ->where('s.id_barang', $id_barang)
+                ->orderBy('s.created_at', 'DESC')
+                ->paginate(25)
+                ->appends(['id_bahan_baku' => $id_barang]); // Menambahkan parameter ke paginasi
+        }
+
+        return view('backend.laporan.mutasi_stok', [
+            'data' => $data,
+            'id_barang' => $id_barang,
+        ]);
+    }
+
+    public function index_harian(Request $request) {
+        
+        // Ambil parameter tanggal dari input
+        $tanggal = $request->get('tanggal');
+
+        // Jika tanggal tidak diisi, gunakan tanggal hari ini sebagai default
+        if (!$tanggal) {
+            $tanggal = date('Y-m-d');
+        }
+
+        // Query data penjualan per kategori berdasarkan tanggal
+        $dataPenjualan = DB::table('penjualan_d AS p')
+            ->selectRaw('
+                h.tanggal,
+                k.nama_kategori,
+                SUM(p.jumlah * p.harga) AS total_per_kategori
+            ')
+            ->leftJoin('penjualan_h AS h', 'p.id_penjualan', '=', 'h.id')
+            ->leftJoin('barang AS b', 'b.id', '=', 'p.id_barang')
+            ->leftJoin('kategori_barang AS k', 'k.id_kategori', '=', 'b.id_kategori')
+            ->whereIn('b.id_kategori', [1, 2, 3, 4, 5, 8]) // Filter kategori
+            ->where('h.id_unit', '=', Session::get('userinfo')['id_unit'])
+            ->where('h.active', '!=', 0)
+            ->whereDate('h.tanggal', $tanggal) // Filter berdasarkan tanggal
+            ->groupBy('h.tanggal', 'k.nama_kategori');
+
+        // Query data penitipan berdasarkan tanggal
+        $dataPenitipan = DB::table('keep_h')
+            ->selectRaw('
+                tanggal,
+                "Bagi Hasil Penitipan Jajanan" AS nama_kategori,
+                SUM(bagi_hasil) AS total_per_kategori
+            ')
+            ->where('active', '=', 1)
+            ->where('id_unit', '=', Session::get('userinfo')['id_unit'])
+            ->whereDate('tanggal', $tanggal) // Filter berdasarkan tanggal
+            ->groupBy('tanggal');
+
+        // Gabungkan data penjualan dan penitipan menggunakan UNION ALL
+        $data = $dataPenjualan
+            ->unionAll($dataPenitipan)
+            ->orderBy('tanggal')
+            ->get();
+
+        // Kirim data ke view
+        return view('backend.laporan.harian', [
+            'data' => $data,
+            'tanggal' => $tanggal
+        ]);
+	}
+
 }

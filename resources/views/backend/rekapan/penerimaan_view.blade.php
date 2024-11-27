@@ -28,6 +28,12 @@
 		$bulan_select = $bulan_ini;
 	}
 
+    $currentYear = date('Y');
+    $tahun_select = request('tahun') ?: $currentYear;
+
+    $years = range($currentYear - 1, $currentYear + 5);
+    $activeYear = $tahun_select;
+
 ?>
 
 <!-- LAYOUT -->
@@ -57,7 +63,7 @@
                 <div class="x_content">
                     <div class="row">
                         <div class="col-xs-12 col-sm-1" style="margin-top:7px;">
-                            Periode 
+                            Bulan 
                         </div>
                         <div class="col-xs-12 col-sm-5">
                             <select class="form-control" name="bulan" id="bulan" required="required">
@@ -72,8 +78,20 @@
 							@endif
 							</select>
                             <input type="hidden" id="unit" name="unit" value="{{$unit_id}}">
-                        </div>
+                        </div><br><br>
 
+                        <div class="col-xs-12 col-sm-1" style="margin-top:7px;">
+                            Tahun
+                        </div>
+						<div class="col-xs-12 col-sm-5">
+                            <select class="form-control" name="tahun" id="tahun" required="required">
+                                @foreach($years as $year)
+                                    <option value="{{ $year }}" {{ $year == $activeYear ? 'selected' : '' }}>{{ $year }}</option>
+                                @endforeach
+                            </select>
+                        </div><br><br>
+
+						<div class="col-xs-12 col-sm-1" style="margin-top:7px;"></div>
 						<div class="col-xs-12 col-sm-2" style="margin-top:0px;">
 							<button type="submit" class="btn btn-primary btn-block" id="btn-sinkron">Submit</button>
                         </div>
@@ -121,7 +139,7 @@
                                 </tr>
 								<tr>
                                 	<td>4.</td>
-                                    <td>Bagi Hasil Titipan UMKM</td>
+                                    <td>Bagi Hasil Titipan Jajanan</td>
                                     @foreach ($data_umkm as $du)
                                     <td id="empat" value="{{$du->total}}" style="text-align:right"><?=number_format($du->total,0,',','.');?></td>
                                     @endforeach
@@ -165,9 +183,10 @@
 			$("#btn-sinkron").on('click', function(){
 				$.get("{{url('backend/rekapan/sinkron')}}",function(){
 					$val_bulan = $('#bulan').val();
-					$val_unit = $('#unit').val()
+                    $val_tahun = $('#tahun').val();
+					$val_unit = $('#unit').val();
 					if($val_bulan !='' && $val_unit !=''){
-						window.location = '{{url("backend/rekap-penerimaan")}}/'+$val_unit+'/'+$val_bulan;
+						window.location = '{{url("backend/rekap-penerimaan")}}/'+$val_unit+'/'+$val_bulan+'/'+$val_tahun;
 					} 
                 });
 			})
