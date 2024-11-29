@@ -2,7 +2,7 @@
 	$breadcrumb = [];
 	$breadcrumb[0]['title'] = 'Dashboard';
 	$breadcrumb[0]['url'] = url('backend/dashboard');
-	$breadcrumb[1]['title'] = 'Penerimaan Harian';
+	$breadcrumb[1]['title'] = 'Laporan Harian';
 	$breadcrumb[1]['url'] = url('backend/report-harian');
 
 	$unit_id = Session::get('userinfo')['id_unit'];
@@ -12,13 +12,13 @@
 @extends('backend.layouts.main')
 
 <!-- TITLE -->
-@section('title', 'Penerimaan')
+@section('title', 'Laporan Harian')
 
 <!-- CONTENT -->
 @section('content')
 <div class="page-title">
     <div class="title_left">
-        <h3>Penerimaan Harian</h3>
+        <h3>Laporan Harian</h3>
     </div>
     <div class="title_right">
         <div class="col-md-4 col-sm-4 col-xs-8 form-group pull-right top_search">

@@ -2,20 +2,8 @@
 	$breadcrumb = [];
 	$breadcrumb[0]['title'] = 'Dashboard';
 	$breadcrumb[0]['url'] = url('backend/dashboard');
-	$breadcrumb[1]['title'] = 'Rekap Penjualan';
-	$breadcrumb[1]['url'] = url('backend/rekap-penjualan');
-
-    /* $kategori = array( 
-		"0"=>"",
-		"1"=>'Minuman & Ice Cream', 
-		"2"=>'Alat Tulis Sekolah', 
-		"3"=>'Seragam & Perlengkapan Sekolah',
-        "4"=>'...',
-        "5"=>'TERA',
-        "6"=>'...',
-        "7"=>'...',
-        "8"=>'Kangen Water'); 
-	$kategori_select = request('kategori'); */
+	$breadcrumb[1]['title'] = 'Laporan Penjualan Kategori';
+	$breadcrumb[1]['url'] = url('backend/report-rekap-penjualan');
 
     $kategori = array(
         "1" => 'Minuman & Ice Cream',
@@ -69,7 +57,7 @@
 @section('content')
     <div class="page-title">
         <div class="title_left">
-            <h3>Rekap Penjualan</h3>
+            <h3>Laporan Penjualan Kategori</h3>
         </div>
         <div class="title_right">
             <div class="col-md-4 col-sm-4 col-xs-8 form-group pull-right top_search">

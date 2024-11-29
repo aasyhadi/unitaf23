@@ -160,6 +160,64 @@ class LaporanController extends Controller
         return view('backend.laporan.rekap_view', compact('data'));
     }
 
+    public function index_kangen_water()
+    {
+        //
+    	$startDate = "01"."-".date('m-Y');
+        $endDate = date('d-m-Y');
+        $mode = "all";
+		if (isset($_GET["startDate"]) || isset($_GET["endDate"]) || isset($_GET["mode"])){
+			if ((isset($_GET['startDate'])) && ($_GET['startDate'] != "")){
+				$startDate = $_GET["startDate"];
+			}
+			if ((isset($_GET['endDate'])) && ($_GET['endDate'] != "")){
+				$endDate = $_GET["endDate"];
+			}
+			if (!isset($_GET["mode"])){
+				$mode = "limited";
+			}
+        }
+		if (isset($_GET['status']) && $_GET['status']!=""){
+			$status = $_GET['status'];
+		}else{
+			$status = 0;
+        }
+        
+		$startDateQuery = date("Y-m-d", strtotime($startDate));
+        $endDateQuery = date("Y-m-d", strtotime($endDate));
+        if ($mode == "all"){
+            $data = $data = DB::table('penjualan_d AS p')
+                    ->select('b.kode', 'b.nama', DB::raw('SUM(p.jumlah) AS jumlah'), 'p.harga', DB::raw('(SUM(p.jumlah) * p.harga) AS total'))
+                    ->leftJoin('penjualan_h AS h', 'p.id_penjualan', '=', 'h.id')
+                    ->leftJoin('barang AS b', 'b.id', '=', 'p.id_barang')
+                    ->leftJoin('kategori_barang AS k', 'k.id_kategori', '=', 'b.id_kategori')
+                    ->where('b.id_kategori', '=', 8)
+                    ->where('h.id_unit','=',Session::get('userinfo')['id_unit'])
+                    ->where('h.active','!=', 0)
+                    ->groupBy('b.kode', 'b.nama', 'p.harga')
+                    ->orderBy('b.kode');
+        } else 
+        if ($mode == "limited"){
+            $data = $data = DB::table('penjualan_d AS p')
+                ->select('b.kode', 'b.nama', DB::raw('SUM(p.jumlah) AS jumlah'), 'p.harga', DB::raw('(SUM(p.jumlah) * p.harga) AS total'))
+                ->leftJoin('penjualan_h AS h', 'p.id_penjualan', '=', 'h.id')
+                ->leftJoin('barang AS b', 'b.id', '=', 'p.id_barang')
+                ->leftJoin('kategori_barang AS k', 'k.id_kategori', '=', 'b.id_kategori')
+                ->where('b.id_kategori', '=', 8)
+                ->where('h.id_unit','=',Session::get('userinfo')['id_unit'])
+                ->where('h.active','!=', 0)
+                ->whereBetween('p.created_at', [$startDateQuery, $endDateQuery])
+                ->groupBy('b.kode', 'b.nama', 'p.harga')
+                ->orderBy('b.kode');
+        }
+        $data = $data->get();
+
+		view()->share('startDate',$startDate);
+		view()->share('endDate',$endDate);
+        view()->share('mode',$mode);
+		return view ('backend.laporan.kangenwater',['data'=>$data]);
+    }
+
     public function index_umkm()
     {
         //
@@ -269,7 +327,7 @@ class LaporanController extends Controller
             ->selectRaw('
                 tanggal,
                 "Penitipan Jajanan" AS nama_kategori,
-                SUM(total) + SUM(bagi_hasil) AS total_per_kategori
+                SUM(total) AS total_per_kategori
             ')
             ->where('active', '=', 1)
             ->where('id_unit', '=', Session::get('userinfo')['id_unit'])
