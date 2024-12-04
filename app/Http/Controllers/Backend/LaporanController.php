@@ -327,7 +327,7 @@ class LaporanController extends Controller
             ->selectRaw('
                 tanggal,
                 "Penitipan Jajanan" AS nama_kategori,
-                SUM(total) AS total_per_kategori
+                SUM(total) + SUM(bagi_hasil) AS total_per_kategori
             ')
             ->where('active', '=', 1)
             ->where('id_unit', '=', Session::get('userinfo')['id_unit'])
