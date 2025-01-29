@@ -21,7 +21,9 @@ class KoreksiController extends Controller {
         $detail = new Stok();
         $detail->id_barang = $request->id_bahan_baku;
         $detail->jumlah = $request->jumlah / 1;
-        $detail->keterangan = "Koreksi Stok";
+        /* $detail->keterangan = "Koreksi Stok"; */
+        $request->merge(['keterangan' => $request->keterangan ?? 'Koreksi stok']);
+        $detail->keterangan = $request->keterangan; 
         $detail->type = "koreksi";
         $detail->save();
 

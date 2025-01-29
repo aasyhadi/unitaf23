@@ -59,6 +59,12 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label col-sm-3 col-xs-12">Keterangan</label>
+                            <div class="col-sm-4 col-xs-12">
+                                <textarea class="form-control" name="keterangan" placeholder="Keterangan"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <div class="col-xs-12 col-sm-9 col-sm-offset-3">
                                 <button type="submit" class="btn btn-primary btn-block">Submit </button>
                             </div>
