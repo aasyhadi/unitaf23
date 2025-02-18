@@ -160,12 +160,13 @@ class LaporanController extends Controller
         return view('backend.laporan.rekap_view', compact('data'));
     }
 
-    public function index_kangen_water()
+    public function view_rekap_kategori()
     {
         //
     	$startDate = "01"."-".date('m-Y');
         $endDate = date('d-m-Y');
         $mode = "all";
+        $id_kategori = request('kategori', null); // Menggunakan request untuk mendapatkan nilai kategori
 		if (isset($_GET["startDate"]) || isset($_GET["endDate"]) || isset($_GET["mode"])){
 			if ((isset($_GET['startDate'])) && ($_GET['startDate'] != "")){
 				$startDate = $_GET["startDate"];
@@ -191,7 +192,7 @@ class LaporanController extends Controller
                     ->leftJoin('penjualan_h AS h', 'p.id_penjualan', '=', 'h.id')
                     ->leftJoin('barang AS b', 'b.id', '=', 'p.id_barang')
                     ->leftJoin('kategori_barang AS k', 'k.id_kategori', '=', 'b.id_kategori')
-                    ->where('b.id_kategori', '=', 8)
+                    ->where('b.id_kategori', '=', $id_kategori)
                     ->where('h.id_unit','=',Session::get('userinfo')['id_unit'])
                     ->where('h.active','!=', 0)
                     ->groupBy('b.kode', 'b.nama', 'p.harga')
@@ -203,7 +204,7 @@ class LaporanController extends Controller
                 ->leftJoin('penjualan_h AS h', 'p.id_penjualan', '=', 'h.id')
                 ->leftJoin('barang AS b', 'b.id', '=', 'p.id_barang')
                 ->leftJoin('kategori_barang AS k', 'k.id_kategori', '=', 'b.id_kategori')
-                ->where('b.id_kategori', '=', 8)
+                ->where('b.id_kategori', '=', $id_kategori)
                 ->where('h.id_unit','=',Session::get('userinfo')['id_unit'])
                 ->where('h.active','!=', 0)
                 ->whereBetween('p.created_at', [$startDateQuery, $endDateQuery])
@@ -215,7 +216,8 @@ class LaporanController extends Controller
 		view()->share('startDate',$startDate);
 		view()->share('endDate',$endDate);
         view()->share('mode',$mode);
-		return view ('backend.laporan.kangenwater',['data'=>$data]);
+		return view ('backend.laporan.rekap_kategori_view',['data'=>$data]);
+
     }
 
     public function index_umkm()

@@ -2,8 +2,18 @@
 	$breadcrumb = [];
 	$breadcrumb[0]['title'] = 'Dashboard';
 	$breadcrumb[0]['url'] = url('backend/dashboard');
-	$breadcrumb[1]['title'] = 'Laporan Penjualan Kangen Water';
-	$breadcrumb[1]['url'] = url('backend/report-kangen-water');
+	$breadcrumb[1]['title'] = 'Laporan Penjualan Rekap Kategori';
+	$breadcrumb[1]['url'] = url('backend/report-rekap-kategori');
+
+    $kategori = array(
+        "1" => 'Minuman & Ice Cream',
+        "2" => 'Alat Tulis Sekolah',
+        "3" => 'Seragam & Perlengkapan Sekolah',
+        "5" => 'TERA',
+        "8" => 'Kangen Water'
+    );
+    $kategori_select = request('kategori');
+
 ?>
 
 <!-- LAYOUT -->
@@ -36,7 +46,7 @@
                             <div class="col-xs-12 col-sm-1" style="margin-top:7px;">
                                 Tanggal
                             </div>
-                            <div class="col-xs-12 col-sm-3 date">
+                            <div class="col-xs-12 col-sm-2 date">
                                 <div class='input-group date' id='myDatepicker'>
                                     <input type='text' class="form-control" name="startDate" value=<?=$startDate;?> />
                                     <span class="input-group-addon">
@@ -44,7 +54,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-3 date">
+                            <div class="col-xs-12 col-sm-2 date">
                                 <div class='input-group date' id='myDatepicker2'>
                                     <input type='text' class="form-control" name="endDate" value=<?=$endDate;?> />
                                     <span class="input-group-addon">
@@ -52,6 +62,17 @@
                                     </span>
                                 </div>
                             </div>
+                            <div class="col-xs-12 col-sm-1" style="margin-top:7px;">Kategori</div>
+                            <div class="col-xs-12 col-sm-2">
+                                <select class="form-control" name="kategori" id="kategori" required="required">
+                                    <option value="">Pilih Kategori...</option>
+                                        @foreach($kategori as $key => $value)
+                                            <option value="{{ $key }}" {{ $kategori_select == $key ? 'selected' : '' }}>
+                                                {{ $value }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                            </div>     
                             <div class="col-xs-12 col-sm-2 text-right">
                                 <?php
                                     $checked = "";

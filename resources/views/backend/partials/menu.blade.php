@@ -178,9 +178,9 @@
 			</li>
             
 			<!-- Laporan -->
-			<li class=" {{ ((($segment == 'report-purchase') || ($segment == 'report-penjualan') || ($segment == 'report-umkm') || ($segment == 'report-kategori') || ($segment == 'report-stok') || ($segment == 'report-mutasi-stok') || ($segment == 'report-harian') || ($segment == 'report-kangen-water')) ? 'active' : '') }}">
+			<li class=" {{ ((($segment == 'report-purchase') || ($segment == 'report-penjualan') || ($segment == 'report-umkm') || ($segment == 'report-kategori') || ($segment == 'report-stok') || ($segment == 'report-mutasi-stok') || ($segment == 'report-harian') || ($segment == 'report-rekap-kategori')) ? 'active' : '') }}">
 				<a><i class="fa fa-bar-chart-o"></i> Laporan <span class="fa fa-chevron-down"></span></a>
-				<ul class="nav child_menu" style="{{ ((($segment == 'report-purchase') || ($segment == 'report-penjualan') || ($segment == 'report-umkm') || ($segment == 'report-kategori') || ($segment == 'report-stok') || ($segment == 'report-mutasi-stok') || ($segment == 'report-harian') || ($segment == 'report-kangen-water')) ? 'display : block' : '') }}">
+				<ul class="nav child_menu" style="{{ ((($segment == 'report-purchase') || ($segment == 'report-penjualan') || ($segment == 'report-umkm') || ($segment == 'report-kategori') || ($segment == 'report-stok') || ($segment == 'report-mutasi-stok') || ($segment == 'report-harian') || ($segment == 'report-rekap-kategori')) ? 'display : block' : '') }}">
 					<li class="{{ ($segment == 'report-purchase' ? 'active' : '') }}">
 						<a href="<?=url('backend/report-purchase');?>">Pembelian / PO</a>
 					</li>
@@ -200,11 +200,11 @@
 					<?php
 						endif;
 					?>
-					<li class="{{ ($segment == 'report-kangen-water' ? 'active' : '') }}">
-						<a href="<?=url('backend/report-kangen-water');?>">Penjualan Kangen Water</a>
+					<li class="{{ ($segment == 'report-rekap-kategori' ? 'active' : '') }}">
+						<a href="<?=url('backend/report-rekap-kategori');?>">Penjualan Kategori Bulanan</a>
                     </li>
 					<li class="{{ ($segment == 'report-kategori' ? 'active' : '') }}">
-						<a href="<?=url('backend/report-rekap-penjualan');?>">Penjualan Kategori</a>
+						<a href="<?=url('backend/report-rekap-penjualan');?>">Penjualan Kategori Harian</a>
                     </li>
 					<li class="{{ ($segment == 'report-stok' ? 'active' : '') }}">
 						<a href="<?=url('backend/report-stok');?>">Stok Barang</a>
