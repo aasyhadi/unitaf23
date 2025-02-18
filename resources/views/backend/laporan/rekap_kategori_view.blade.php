@@ -20,13 +20,13 @@
 @extends('backend.layouts.main')
 
 <!-- TITLE -->
-@section('title', 'Penjualan Kangen Water')
+@section('title', 'Penjualan Kategori Bulanan')
 
 <!-- CONTENT -->
 @section('content')
     <div class="page-title">
         <div class="title_left">
-            <h3>Laporan Penjualan Kangen Water</h3>
+            <h3>Laporan Penjualan Kategori Bulanan</h3>
         </div>
         <div class="title_right">
             <div class="col-md-4 col-sm-4 col-xs-8 form-group pull-right top_search">
